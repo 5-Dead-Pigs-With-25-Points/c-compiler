@@ -1,1 +1,1 @@
-# c-compiler
+# C-compiler
