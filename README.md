@@ -1,4 +1,4 @@
-# c-compiler
+# C-compiler
 
 2021秋-南开大学-编译原理-c语言编译器
 
