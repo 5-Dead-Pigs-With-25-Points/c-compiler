@@ -1,3 +1,4 @@
+%option noyywrap
 %x COMMENT
 %{
 #include "grammar.tab.h"
@@ -60,6 +61,3 @@ ws  {delim}+
 [ \t\v\f\r\n]                       { }
 
 %%
-int yywrap() {
-    return 1;
-}
