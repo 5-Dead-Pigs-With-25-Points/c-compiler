@@ -20,3 +20,17 @@
 - 算术运算：+，-，*，/，%
 - 关系运算：==，>, <, >=, <=, !=
 - 逻辑运算：&&（与），||（或），！（非）
+
+## 运行环境及方法
+
+Linux
+
+在项目根目录下执行以下命令：
+
+bison -d grammar.y
+
+flex lexical.l
+
+g++ -o test grammar.tab.c lex.yy.c -lfl
+
+./test input.cpp
