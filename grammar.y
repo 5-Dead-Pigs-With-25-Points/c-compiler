@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <fstream>
-#include "../grammar/Nodes.h"  
+#include "./grammar/Nodes.h"  
 
 using ASTREE::RootNode;
 using SMB::StructTable;
@@ -22,7 +22,7 @@ extern int yylineno;
     char* str;
 }
 %locations
-%define parser.error verbose
+//%define parser.error verbose
 
 %right <astree> '='
 %right <astree> '&'    // 取地址运算符应该是右结合

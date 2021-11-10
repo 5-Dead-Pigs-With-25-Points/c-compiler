@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "nodes.h": "c",
+        "symboltype.h": "c",
+        "varnode.h": "c"
+    }
+}
