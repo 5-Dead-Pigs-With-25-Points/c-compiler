@@ -1,5 +1,5 @@
 *.vs
-Debug
+/Debug/
 *.sln
 *.vcxproj
 *.filters
