@@ -24,16 +24,24 @@ extern int yylineno;
 %locations
 %define parser.error verbose
 
-%right <astree> '=' '!'
-%left <astree> OR AND '&' RELOP 
-%left '+' '-' '*' '/' '%' '^'
+%right <astree> '='
+%right <astree> '&'    // 取地址运算符应该是右结合
+%left <astree> OR 
+%left <astree> AND
+%left <astree> RELOP 
+%left <astree> '+' '-'
+%left <astree> '*' '/' '%'
+%right <astree> '^'     // 幂运算是右结合
+%right <astree> '!'
 %left '(' ')' '[' ']'
 %nonassoc LOWER_THAN_ELSE
 %token ERROID
 %token <str> ID INT
-%token ',' ';' '{' '}'
+%token <str> TYPE
+%token ',' ';' 
 %token STRUCT
 %token IF ELSE WHILE FOR CONTINUE RETURN ERRORCHAR GETMEMBER
+%token '{' '}'
 
 /* 非终结符 */
 %type <astree> program translation_unit external_declaration
