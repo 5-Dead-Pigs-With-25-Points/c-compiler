@@ -4,7 +4,7 @@
 #include "./RootNode.h"
 #include <string>
 
-namespace AST {
+namespace ASTREE {
     
     enum SelectType {
         if_stmt = 0,

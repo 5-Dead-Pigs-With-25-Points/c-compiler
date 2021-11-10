@@ -1,21 +1,21 @@
 #include "./VarNode.h"
 #include "./OperatorNode.h"
 
-AST::DefineVarNode::DefineVarNode() : RootNode(AST::ASTNodeType::def_var) {
+ASTREE::DefineVarNode::DefineVarNode() : RootNode(ASTREE::ASTNodeType::def_var) {
     this->symbol_type = SMB::SymbolType::none;
 }
 
-AST::DefineVarNode::DefineVarNode(std::string content, std::string struct_name)
-    : RootNode(content, AST::ASTNodeType::def_var) {
+ASTREE::DefineVarNode::DefineVarNode(std::string content, std::string struct_name)
+    : RootNode(content, ASTREE::ASTNodeType::def_var) {
     this->symbol_type = SMB::SymbolType::struct_type;
     this->struct_name = struct_name;
 }
 
-AST::DefineVarNode::DefineVarNode(std::string content) : RootNode(content, AST::ASTNodeType::def_var) {
+ASTREE::DefineVarNode::DefineVarNode(std::string content) : RootNode(content, ASTREE::ASTNodeType::def_var) {
     this->symbol_type = SMB::SymbolType::none;
 }
 
-void AST::DefineVarNode::printInfo(int) {
+void ASTREE::DefineVarNode::printInfo(int) {
     if (this->symbol_type == SMB::SymbolType::array) {
         std::cout << "array defination: " << this->content << "length: " << this->array_length;
     }
@@ -24,7 +24,7 @@ void AST::DefineVarNode::printInfo(int) {
     }
 }
 
-void AST::DefineVarNode::setAllSymbolType(std::string symbol_type) {
+void ASTREE::DefineVarNode::setAllSymbolType(std::string symbol_type) {
     SMB::SymbolType var_type;
     if (symbol_type == "int") {
         var_type = SMB::SymbolType::integer;
@@ -47,24 +47,24 @@ void AST::DefineVarNode::setAllSymbolType(std::string symbol_type) {
     }
     RootNode* peer = this->getPeerNode();
     if (!peer) return;
-    if (peer->getASTNodeType() == AST::op) {
+    if (peer->getASTNodeType() == ASTREE::op) {
         OperatorNode* tmp = (OperatorNode*)peer;
         tmp->setAllSymbolType(symbol_type);
     }
-    else if (peer->getASTNodeType() == AST::def_var) {
+    else if (peer->getASTNodeType() == ASTREE::def_var) {
         DefineVarNode* tmp = (DefineVarNode*)peer;
         tmp->setAllSymbolType(symbol_type);
     }
 }
 
-void AST::DefineVarNode::setArrayLength(std::string length) {
+void ASTREE::DefineVarNode::setArrayLength(std::string length) {
     this->array_length = atoi(length.c_str());
 }
 
-AST::CallVarNode::CallVarNode() : RootNode(AST::ASTNodeType::call_var) {}
+ASTREE::CallVarNode::CallVarNode() : RootNode(ASTREE::ASTNodeType::call_var) {}
 
-AST::CallVarNode::CallVarNode(std::string content) : RootNode(content, AST::ASTNodeType::call_var) {}
+ASTREE::CallVarNode::CallVarNode(std::string content) : RootNode(content, ASTREE::ASTNodeType::call_var) {}
 
-void AST::CallVarNode::printInfo(int) {
+void ASTREE::CallVarNode::printInfo(int) {
     std::cout << "variable: " << this->content;
 }

@@ -4,7 +4,7 @@
 #include "./RootNode.h"
 #include "../symbol/SymbolType.h"
 
-namespace AST {
+namespace ASTREE {
     class DefineVarNode : public RootNode {
         private:
             SMB::SymbolType symbol_type;

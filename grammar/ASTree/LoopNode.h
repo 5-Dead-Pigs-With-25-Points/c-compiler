@@ -4,7 +4,7 @@
 #include "./RootNode.h"
 #include <string>
 
-namespace AST {
+namespace ASTREE {
 
     enum LoopType {
         for_loop = 0,

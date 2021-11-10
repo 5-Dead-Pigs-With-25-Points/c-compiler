@@ -1,14 +1,14 @@
 #include "./LiteralNode.h"
 
-AST::LiteralNode::LiteralNode() : RootNode(AST::ASTNodeType::literal) {}
+ASTREE::LiteralNode::LiteralNode() : RootNode(ASTREE::ASTNodeType::literal) {}
 
-AST::LiteralNode::LiteralNode(std::string content) : RootNode(content, AST::ASTNodeType::literal) {}
+ASTREE::LiteralNode::LiteralNode(std::string content) : RootNode(content, ASTREE::ASTNodeType::literal) {}
 
-int AST::LiteralNode::getValue() {
+int ASTREE::LiteralNode::getValue() {
     return std::stoi(this->content);
     return std::stoi(this->content);
 }
 
-void AST::LiteralNode::printInfo(int) {
+void ASTREE::LiteralNode::printInfo(int) {
     std::cout << "literal: " << this->content;
 }

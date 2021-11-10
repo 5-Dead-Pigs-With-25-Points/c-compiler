@@ -68,7 +68,7 @@ translation_unit: external_declaration {
 			$$ = $2;
         } else {
 			if ($2 != NULL) {
-				$1 -> getFinalCousinNode() -> addCousinNode($2);
+				$1 -> getLastPeerNode() -> addPeerNode($2);
 			}
 			$$ = $1;
 		}
@@ -114,7 +114,7 @@ declarators_init: declarator_init {
 		$$ = $1;
 	}
 	| declarators_init ',' declarator_init {
-		$1 -> getFinalCousinNode() -> addCousinNode($3);
+		$1 -> getLastPeerNode() -> addPeerNode($3);
 		$$ = $1;
 	}
 	;
@@ -131,7 +131,7 @@ declarator_init: variable_declarator {
         ASTREE::RootNode* operator = new ASTREE::OperatorNode("=", ASTREE::assign);
         ASTREE::RootNode* t = new ASTREE::LiteralNode($3);
         operator -> addChildNode($1)
-        $1 -> addCousinNode(t);
+        $1 -> addPeerNode(t);
         $$ = operator;
     }
     ;
@@ -180,7 +180,7 @@ struct_parameters: struct_parameter {
         $$ = $1;
     }
     | struct_parameters struct_parameter {
-        $1 -> getFinalCousinNode() -> addCousinNode($2);
+        $1 -> getLastPeerNode() -> addPeerNode($2);
         $$ = $1;
     }
     ;
@@ -227,7 +227,7 @@ function_declarator: ID '(' parameter_list ')' {
 
 // 参数列表：多参数 1参数
 parameter_list: parameter_list ',' parameter_declaration {
-		$1 -> getFinalCousinNode() -> addCousinNode($3);
+		$1 -> getLastPeerNode() -> addPeerNode($3);
         $$  =$1;
     }
     | parameter_declaration {
@@ -261,61 +261,61 @@ expression: expression '=' expression{									/* 赋值运算 */
 			}
 		}
 		assignOpNode -> addChildNode($1);
-		$1 -> addCousinNode($3);
+		$1 -> addPeerNode($3);
 		$$ = assignOpNode;
 	}
 	| expression AND expression {										/* 与运算 */
 		RootNode* andOpNode = new ASTREE::OperatorNode("&&", ASTREE:and_op);
 		andOpNode -> addChildNode($1);
-		$1 -> addCousinNode($3);
+		$1 -> addPeerNode($3);
 		$$ = andOpNode;
 	}
 	| expression OR expression {
 		RootNode* orOpNode = new ASTREE::OperatorNode("||", ASTREE::or_op);
 		orOpNode -> addChildNode($1);
-		$1 -> addCousinNode($3);
+		$1 -> addPeerNode($3);
 		$$ = temp;
 	}
 	| expression RELOP expression {										/* 比较运算 */
 		RootNode* relopNode = new ASTREE::OperatorNode($2, ASTREE::relop);
 		relopNode -> addChildNode($1);
-		$1 -> addCousinNode($3);
+		$1 -> addPeerNode($3);
 		$$ = relopNode;
 	}
 	| expression '+' expression {										/* 加运算 */
 		RootNode* addOpNode = new ASTREE::OperatorNode("+", ASTREE::add);
 		addOpNode -> addChildNode($1);
-		$1 -> addCousinNode($3);
+		$1 -> addPeerNode($3);
 		$$ = addOpNode;
 	}
 	| expression '-' expression {										/* 减运算 */
 		RootNode* minusOpNode = new ASTREE::OperatorNode("-", ASTREE::minus);
 		minusOpNode -> addChildNode($1);
-		$1 -> addCousinNode($3);
+		$1 -> addPeerNode($3);
 		$$ = minusOpNode;
 	}
 	| expression '*' expression {										/* 乘运算 */
 		RootNode* multiOpNode = new ASTREE::OperatorNode("*", ASTREE::multi);
 		multiOpNode -> addChildNode($1);
-		$1 -> addCousinNode($3);
+		$1 -> addPeerNode($3);
 		$$ = multiOpNode;
 	}
 	| expression '/' expression {										/* 除运算 */
 		RootNode* divOpNode = new ASTREE::OperatorNode("/", ASTREE::div);
 		divOpNode -> addChildNode($1);
-		$1 -> addCousinNode($3);
+		$1 -> addPeerNode($3);
 		$$ = divOpNode;
 	}
 	| expression '%' expression {										/* 取模运算 */
 		RootNode* modOpNode = new ASTREE::OperatorNode("%", ASTREE::mod);
 		modOpNode -> addChildNode($1);
-		$1 -> addCousinNode($3);
+		$1 -> addPeerNode($3);
 		$$ = modOpNode;
 	}
 	| expression '^' expression {										/* 幂运算 */
 		RootNode* powOpNode = new ASTREE::OperatorNode("^", ASTREE::pow);
 		powOpNode -> addChildNode($1);
-		$1 -> addCousinNode($3);
+		$1 -> addPeerNode($3);
 		$$ = powOpNode;
 	}
 	| '!' expression {													/* 非运算（单目） */
@@ -347,7 +347,7 @@ expression: expression '=' expression{									/* 赋值运算 */
 		RootNode* getVarNode = new ASTREE::OperatorNode("[]", ASTREE::get_arr_var);
 		RootNode* temp = new ASTREE::AssignVarNode($1);
 		getVarNode -> addChildNode(temp);
-		temp -> addCousinNode($3);
+		temp -> addPeerNode($3);
 		$$ = getVarNode;
 	}
 	| ID GETMEMBER ID {													/* 获取对象成员属性 */
@@ -355,14 +355,14 @@ expression: expression '=' expression{									/* 赋值运算 */
 		ASTREE::AssignVarNode* var1 = new ASTREE::AssignVarNode($1);
 		ASTREE::AssignVarNode* var2 = new ASTREE::AssignVarNode($3);
 		getMemberNode -> addChildNode(var1);
-		var1 -> addCousinNode(var2);
+		var1 -> addPeerNode(var2);
 		$$ = getMemberNode;
 	}
 	| INT {																/* 字面量节点 */
 		$$ = new ASTREE::LiteralNode($1);
 	}
 	| '*' ID {															/* 指针取值 */
-		RootNode* starNode = new ASTREE::OperatorNode("*", ASTREE::get_var);
+		RootNode* starNode = new ASTREE::OperatorNode("*", ASTREE::get_value);
 		ASTREE::AssignVarNode* var = new ASTREE::AssignVarNode($2);
 		starNode -> addChildNode(var);
 		$$ = starNode;
@@ -381,7 +381,7 @@ argument_expression_list: expression {
 		$$ = $1;
 	}
 	| argument_expression_list ',' expression {
-		$1 -> getFinalCousionNode() -> addCousinNode($3);
+		$1 -> getLastCousionNode() -> addPeerNode($3);
 		$$ = $1;
 	}
 	;	
@@ -396,7 +396,7 @@ compound_statement: '{' block_list '}' {
     ;
 	
 block_list: block_list statement {
-        $1->getFinalCousinNode()->addCousinNode($2);
+        $1->getLastPeerNode()->addPeerNode($2);
     }
     | statement {
 		$$ = $1
@@ -419,7 +419,7 @@ definition: declaration_specifier declaration_list  {
 
 declaration_list: declaration { $$ = $1; }
     | declaration ',' declaration_list {
-        $1->getFinalCousinNode()->addCousinNode($3);
+        $1->getLastPeerNode()->addPeerNode($3);
         $$ = $1;
     }
     ;
@@ -428,7 +428,7 @@ declaration: variable_declarator{ $$ = $1; }
     | variable_declarator '=' expression {
         $$ = new ASTREE::OperatorNode("=", ASTREE::assign);
         $$->addChildNode($1);
-        $1->addCousinNode($3);
+        $1->addPeerNode($3);
     }
 ;
 

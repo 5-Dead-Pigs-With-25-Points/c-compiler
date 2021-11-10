@@ -1,36 +1,36 @@
 #include "./LoopNode.h"
 
-AST::LoopNode::LoopNode() : RootNode(AST::ASTNodeType::loop) {
+ASTREE::LoopNode::LoopNode() : RootNode(ASTREE::ASTNodeType::loop) {
     this->cond = NULL;
     this->declare = NULL;
     this->action = NULL;
 }
 
-AST::LoopNode::LoopNode(std::string content) : RootNode(content, AST::ASTNodeType::loop) {
+ASTREE::LoopNode::LoopNode(std::string content) : RootNode(content, ASTREE::ASTNodeType::loop) {
     this->cond = NULL;
     this->declare = NULL;
     this->action = NULL;
 }
 
-AST::LoopNode::LoopNode(LoopType tp) : RootNode(AST::ASTNodeType::loop) {
-    this->cond = NULL;
-    this->declare = NULL;
-    this->action = NULL;
-    this->loop_type = tp;
-}
-
-AST::LoopNode::LoopNode(std::string content, LoopType tp) : RootNode(content, AST::ASTNodeType::loop) {
+ASTREE::LoopNode::LoopNode(LoopType tp) : RootNode(ASTREE::ASTNodeType::loop) {
     this->cond = NULL;
     this->declare = NULL;
     this->action = NULL;
     this->loop_type = tp;
 }
 
-// whileÑ­»·
-AST::LoopNode::LoopNode(std::string content,
+ASTREE::LoopNode::LoopNode(std::string content, LoopType tp) : RootNode(content, ASTREE::ASTNodeType::loop) {
+    this->cond = NULL;
+    this->declare = NULL;
+    this->action = NULL;
+    this->loop_type = tp;
+}
+
+// whileÑ­ï¿½ï¿½
+ASTREE::LoopNode::LoopNode(std::string content,
     LoopType loop_type,
     RootNode* condition)
-    : RootNode(content, AST::loop) {
+    : RootNode(content, ASTREE::loop) {
     this->loop_type = loop_type;
     this->cond = condition;
     condition->setParentNode(this);
@@ -38,13 +38,13 @@ AST::LoopNode::LoopNode(std::string content,
     this->action = NULL;
 }
 
-// forÑ­»·
-AST::LoopNode::LoopNode(std::string content,
+// forÑ­ï¿½ï¿½
+ASTREE::LoopNode::LoopNode(std::string content,
     LoopType loop_type,
     RootNode* cond,
     RootNode* dec,
     RootNode* action)
-    : RootNode(content, AST::loop) {
+    : RootNode(content, ASTREE::loop) {
     this->loop_type = loop_type;
     this->cond = cond;
     cond->setParentNode(this);
@@ -54,7 +54,7 @@ AST::LoopNode::LoopNode(std::string content,
     action->setParentNode(this);
 }
 
-void AST::LoopNode::printInfo(int) {
+void ASTREE::LoopNode::printInfo(int) {
     switch (this->loop_type) {
     case while_loop:
         std::cout << "loop statement(while): ";
@@ -65,7 +65,7 @@ void AST::LoopNode::printInfo(int) {
     }
 }
 
-AST::LoopNode::~LoopNode() {
+ASTREE::LoopNode::~LoopNode() {
     if (this->declare) delete declare;
     if (this->cond) delete cond;
     if (this->action) delete action;

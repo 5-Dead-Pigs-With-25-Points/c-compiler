@@ -3,19 +3,19 @@
 #include "../symbol/SymbolType.h"
 #include "./VarNode.h"
 
-AST::DefineFuncNode::DefineFuncNode() : RootNode(AST::ASTNodeType::def_func) {
+ASTREE::DefineFunctionNode::DefineFunctionNode() : RootNode(ASTREE::ASTNodeType::def_func) {
     this->arg_list = NULL;
 }
 
-AST::DefineFuncNode::DefineFuncNode(std::string content) : RootNode(content, AST::ASTNodeType::def_func) {
+ASTREE::DefineFunctionNode::DefineFunctionNode(std::string content) : RootNode(content, ASTREE::ASTNodeType::def_func) {
     this->arg_list = NULL;
 }
 
-AST::DefineFuncNode::DefineFuncNode(std::string content, RootNode* arg_list) : RootNode(content, AST::ASTNodeType::def_func) {
+ASTREE::DefineFunctionNode::DefineFunctionNode(std::string content, RootNode* arg_list) : RootNode(content, ASTREE::ASTNodeType::def_func) {
     this->arg_list = arg_list;
 }
 
-void AST::DefineFuncNode::setReturnSymbolType(std::string symbol_type) {
+void ASTREE::DefineFunctionNode::setReturnSymbolType(std::string symbol_type) {
     if (symbol_type == "int") {
         this->return_symbol_type = SMB::integer;
     }
@@ -27,9 +27,9 @@ void AST::DefineFuncNode::setReturnSymbolType(std::string symbol_type) {
     }
 }
 
-void AST::DefineFuncNode::printInfo(int) {
+void ASTREE::DefineFunctionNode::printInfo(int) {
     std::cout << "function defination: " << this->content;
-    AST::RootNode* args = this->arg_list;
+    ASTREE::RootNode* args = this->arg_list;
     std::string str = ", args: ";
     while (args) {
         str += "(" + SMB::symbol_str[((DefineVarNode*)args)->getSymbolType()] + ")";
@@ -39,23 +39,23 @@ void AST::DefineFuncNode::printInfo(int) {
     std::cout << str;
 }
 
-AST::DefineFuncNode::~DefineFuncNode() {
+ASTREE::DefineFunctionNode::~DefineFunctionNode() {
     if (this->arg_list) {
         delete this->arg_list;
     }
 }
 
-AST::CallFuncNode::CallFuncNode() : RootNode(AST::ASTNodeType::call_func) {
+ASTREE::CallFuncNode::CallFuncNode() : RootNode(ASTREE::ASTNodeType::call_func) {
     this->arg_list = NULL;
 }
 
-AST::CallFuncNode::CallFuncNode(std::string content) : RootNode(content, AST::ASTNodeType::call_func) {
+ASTREE::CallFuncNode::CallFuncNode(std::string content) : RootNode(content, ASTREE::ASTNodeType::call_func) {
     this->arg_list = NULL;
 }
 
-void AST::CallFuncNode::printInfo(int) {
+void ASTREE::CallFuncNode::printInfo(int) {
     std::cout << "call function: " << this->content;
-    AST::RootNode* args = this->arg_list;
+    ASTREE::RootNode* args = this->arg_list;
     std::string str = ", args: ";
     while (args) {
         str += args->getContent() + ", ";
@@ -64,7 +64,7 @@ void AST::CallFuncNode::printInfo(int) {
     std::cout << str;
 }
 
-AST::CallFuncNode::~CallFuncNode() {
+ASTREE::CallFuncNode::~CallFuncNode() {
     if (this->arg_list) {
         delete arg_list;
     }

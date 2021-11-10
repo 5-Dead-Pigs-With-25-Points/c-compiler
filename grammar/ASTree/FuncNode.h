@@ -5,27 +5,27 @@
 #include "../symbol/SymbolType.h"
 #include<string>
 
-namespace AST {
-    class DefineFuncNode : public RootNode {
+namespace ASTREE {
+    class DefineFunctionNode : public RootNode {
         private:
             RootNode* arg_list;
             SMB::SymbolType return_symbol_type;
         public:
             // constructors
-            DefineFuncNode();
-            DefineFuncNode(std::string);
-            DefineFuncNode(std::string, RootNode*);
+            DefineFunctionNode();
+            DefineFunctionNode(std::string);
+            DefineFunctionNode(std::string, RootNode*);
 
             // getters
             inline RootNode* getArgList() { return this->arg_list; }
             inline SMB::SymbolType getReturnSymbolType() { return this->return_symbol_type; }
-            
+
             // setters
             void setReturnSymbolType(std::string);
             void printInfo(int);
-           
+
             // deconstructor
-            ~DefineFuncNode();
+            ~DefineFunctionNode();
     };
 
     class CallFuncNode : public RootNode {

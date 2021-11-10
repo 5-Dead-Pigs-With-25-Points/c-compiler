@@ -5,7 +5,7 @@
 #include<string>
 #include<vector>
 
-namespace AST {
+namespace ASTREE {
     enum ASTNodeType {
         root = 0, // 根节点
         def_var = 1, // 定义变量 

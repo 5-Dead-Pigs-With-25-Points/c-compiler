@@ -1,18 +1,18 @@
 #include "./StmtNode.h"
 
-AST::StatementNode::StatementNode() : RootNode(AST::ASTNodeType::stmt) {}
+ASTREE::StatementNode::StatementNode() : RootNode(ASTREE::ASTNodeType::stmt) {}
 
-AST::StatementNode::StatementNode(std::string content) : RootNode(content, AST::ASTNodeType::stmt) {}
+ASTREE::StatementNode::StatementNode(std::string content) : RootNode(content, ASTREE::ASTNodeType::stmt) {}
 
-AST::StatementNode::StatementNode(StatementType tp) : RootNode(AST::ASTNodeType::stmt) {
+ASTREE::StatementNode::StatementNode(StatementType tp) : RootNode(ASTREE::ASTNodeType::stmt) {
     this->stmt_type = tp;
 }
 
-AST::StatementNode::StatementNode(std::string content, StatementType tp) : RootNode(content, AST::ASTNodeType::stmt) {
+ASTREE::StatementNode::StatementNode(std::string content, StatementType tp) : RootNode(content, ASTREE::ASTNodeType::stmt) {
     this->stmt_type = tp;
 }
 
-void AST::StatementNode::printInfo(int) {
+void ASTREE::StatementNode::printInfo(int) {
     switch (this->stmt_type) {
     case compoundation:
         std::cout << "compound statement: ";

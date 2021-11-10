@@ -4,7 +4,7 @@
 #include "./RootNode.h"
 #include <string>
 
-namespace AST {
+namespace ASTREE {
     
     class LiteralNode: public RootNode {
         public:

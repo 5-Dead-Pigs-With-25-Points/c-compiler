@@ -2,21 +2,21 @@
 #include "./LoopNode.h"
 #include "./SelectNode.h"
 
-AST::RootNode::RootNode() {
+ASTREE::RootNode::RootNode() {
     this->child = NULL;
     this->parent = NULL;
     this->peer = NULL;
     this->content = "code start:";
 }
 
-AST::RootNode::RootNode(std::string content) {
+ASTREE::RootNode::RootNode(std::string content) {
     this->child = NULL;
     this->parent = NULL;
     this->peer = NULL;
     this->content = content;
 }
 
-AST::RootNode::RootNode(ASTNodeType type) {
+ASTREE::RootNode::RootNode(ASTNodeType type) {
     this->child = NULL;
     this->parent = NULL;
     this->peer = NULL;
@@ -24,7 +24,7 @@ AST::RootNode::RootNode(ASTNodeType type) {
     this->content = "";
 }
 
-AST::RootNode::RootNode(std::string content, ASTNodeType type) {
+ASTREE::RootNode::RootNode(std::string content, ASTNodeType type) {
     this->child = NULL;
     this->parent = NULL;
     this->peer = NULL;
@@ -32,14 +32,14 @@ AST::RootNode::RootNode(std::string content, ASTNodeType type) {
     this->content = content;
 }
 
-void AST::RootNode::addPeerNode(AST::RootNode* node) {
+void ASTREE::RootNode::addPeerNode(ASTREE::RootNode* node) {
     this->peer = node;
     if (node) {
         node->parent = this->parent;
     }
 }
 
-void AST::RootNode::addChildNode(AST::RootNode* node) {
+void ASTREE::RootNode::addChildNode(ASTREE::RootNode* node) {
     this->child = node;
     // 遍历新node的所有peer
     // peer->parent = this
@@ -49,7 +49,7 @@ void AST::RootNode::addChildNode(AST::RootNode* node) {
     }
 }
 
-void AST::RootNode::printInfo(int depth) {
+void ASTREE::RootNode::printInfo(int depth) {
     /* while(depth) {
         std::cout << "   ";
         depth--;
@@ -57,7 +57,7 @@ void AST::RootNode::printInfo(int depth) {
     std::cout << this->content;
 }
 
-void AST::RootNode::tree(AST::RootNode* node, int depth, bool flag, std::vector<bool> pre_sep, std::string prefix_str) {
+void ASTREE::RootNode::tree(ASTREE::RootNode* node, int depth, bool flag, std::vector<bool> pre_sep, std::string prefix_str) {
     for (std::vector<bool>::iterator i = pre_sep.begin(); i != pre_sep.end(); i++) {
         std::cout << separator[*i];
     }
@@ -68,49 +68,49 @@ void AST::RootNode::tree(AST::RootNode* node, int depth, bool flag, std::vector<
     pre_sep.push_back(flag);
 
     // 打印循环
-    if (node->getASTNodeType() == AST::loop) {
+    if (node->getASTNodeType() == ASTREE::loop) {
         bool f = node->child;
         LoopNode* loop_node = (LoopNode*)node;
         RootNode* tmp = loop_node->getDeclareNode();
-        if(tmp)AST::RootNode::tree(tmp, depth, !f, pre_sep, "(declare): ");
+        if(tmp)ASTREE::RootNode::tree(tmp, depth, !f, pre_sep, "(declare): ");
         tmp = loop_node->getCondNode();
-        if(tmp)AST::RootNode::tree(tmp, depth, !f, pre_sep, "(condition): ");
+        if(tmp)ASTREE::RootNode::tree(tmp, depth, !f, pre_sep, "(condition): ");
         tmp = loop_node->getActionNode();
-        if(tmp)AST::RootNode::tree(tmp, depth, !f, pre_sep, "(action): ");
+        if(tmp)ASTREE::RootNode::tree(tmp, depth, !f, pre_sep, "(action): ");
     }
     
     // 打印选择
-    if (node->getASTNodeType() == AST::select) {
+    if (node->getASTNodeType() == ASTREE::select) {
         SelectNode *select_node = (SelectNode*)node;
         RootNode *tmp = select_node->getCondNode();
         bool f = select_node->getBodyNode();
-        if(tmp)AST::RootNode::tree(tmp, depth, !f, pre_sep, "(condition): ");
+        if(tmp)ASTREE::RootNode::tree(tmp, depth, !f, pre_sep, "(condition): ");
         tmp = select_node->getBodyNode();
-        if(tmp)AST::RootNode::tree(tmp, depth, true, pre_sep, "(body): ");
+        if(tmp)ASTREE::RootNode::tree(tmp, depth, true, pre_sep, "(body): ");
     }
 
     node = node->child;
     while(node) {
         bool f = node->peer;
-        AST::RootNode::tree(node, depth, !f, pre_sep);
+        ASTREE::RootNode::tree(node, depth, !f, pre_sep);
         node = node->peer;
     }
 }
 
-void AST::RootNode::printTree() {
+void ASTREE::RootNode::printTree() {
     std::vector<bool> v(0);
-    AST::RootNode::tree(this, 1, true, v);
+    ASTREE::RootNode::tree(this, 1, true, v);
 }
 
-AST::RootNode* AST::RootNode::getLastPeerNode() {
-    AST::RootNode* node = this;
+ASTREE::RootNode* ASTREE::RootNode::getLastPeerNode() {
+    ASTREE::RootNode* node = this;
     while(node->peer) {
         node = node->peer;
     }
     return node;
 }
 
-AST::RootNode::~RootNode() {
+ASTREE::RootNode::~RootNode() {
     if (this->peer) {
         delete this->peer;
     }
@@ -120,11 +120,11 @@ AST::RootNode::~RootNode() {
 }
 // for test
 int main() {
-     AST::RootNode* r[11];
+     ASTREE::RootNode* r[11];
      for (int i = 0; i < 11; i++) {
          char* a = (char*)malloc(sizeof(char) * 5);
          sprintf(a, "%d", i + 1);
-         r[i] = new AST::RootNode(a);
+         r[i] = new ASTREE::RootNode(a);
      }
      r[0]->addChildNode(r[1]);
      r[1]->addChildNode(r[2]);

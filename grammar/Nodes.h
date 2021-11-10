@@ -10,5 +10,6 @@
 #include "./ASTree/StmtNode.h"
 #include "./ASTree/VarNode.h"
 #include "./symbol/SymbolType.h"
+#include "./symbol/symbol.h"
 
 #endif

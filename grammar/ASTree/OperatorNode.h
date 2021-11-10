@@ -4,7 +4,7 @@
 #include "./RootNode.h"
 #include <string>
 
-namespace AST {
+namespace ASTREE {
 
     enum OpType {
         none = 0,   
@@ -14,17 +14,25 @@ namespace AST {
         multi = 3,  // *
         div = 4,    // /
         mod = 5,    // %
+        pow = 6,    // ^
 
-        and = 6, // &&
-        or = 7,  // ||
-        not = 8, // !
+        and_op = 7, // &&
+        or_op = 8,  // ||
+        not_op = 9, // !
 
-        relop = 9, // == | != | >= | <= | > | < 
+        relop = 10, // == | != | >= | <= | > | < 
 
-        get_address = 10, // &
-        get_value = 11,// *
+        get_address = 11, // &
+        get_value = 12,// *
 
-        assign = 12, // =
+        assign = 13, // =
+
+        get_arr_var = 14, // []
+        get_member = 15, // a.b
+        assign_arr = 16, // []=
+        assign_member = 17, // a.b=
+
+        negative = 18 // -
     };
     
     class OperatorNode: public RootNode {

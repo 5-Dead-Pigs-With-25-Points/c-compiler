@@ -4,7 +4,7 @@
 #include "./RootNode.h"
 #include <string>
 
-namespace AST {
+namespace ASTREE {
 
     enum StatementType {
         compoundation = 0, // 语句块
