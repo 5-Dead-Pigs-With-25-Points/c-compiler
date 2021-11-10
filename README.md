@@ -31,6 +31,12 @@ bison -d grammar.y
 
 flex lexical.l
 
-g++ -o test grammar.tab.c lex.yy.c -lfl
+g++ -o grammar.o grammar.tab.c lex.yy.c -lfl
 
-./test input.cpp
+./grammar.o input.cpp
+
+或者，在项目根目录下执行：
+
+make
+
+./grammar.o input.cpp
