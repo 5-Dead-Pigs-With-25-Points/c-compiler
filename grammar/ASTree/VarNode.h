@@ -2,7 +2,7 @@
 #define _VARNODE_H_
 
 #include "./RootNode.h"
-#include "./SymbolType.h"
+#include "../symbol/SymbolType.h"
 
 namespace AST {
     class DefineVarNode : public RootNode {

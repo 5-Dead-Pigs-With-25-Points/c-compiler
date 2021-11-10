@@ -2,7 +2,7 @@
 #define _FUNCNODE_H_
 
 #include "./RootNode.h"
-#include "./SymbolType.h"
+#include "../symbol/SymbolType.h"
 #include<string>
 
 namespace AST {

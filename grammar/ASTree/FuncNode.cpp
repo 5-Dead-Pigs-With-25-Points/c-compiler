@@ -1,6 +1,6 @@
 #include "./FuncNode.h"
 
-#include "./SymbolType.h"
+#include "../symbol/SymbolType.h"
 #include "./VarNode.h"
 
 AST::DefineFuncNode::DefineFuncNode() : RootNode(AST::ASTNodeType::def_func) {
