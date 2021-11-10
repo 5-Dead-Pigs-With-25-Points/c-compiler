@@ -78,7 +78,7 @@ struct a {};
 */
 external_declaration: declaration_specifier declarators_init ';' {
 		ASTREE:: RootNode* statement = new ASTREE::StatementNode(ASTREE::definition);
-		ASTREE::DefineVariableNode* variable = (ASTREE::DefineVariableNode*)$2;
+		ASTREE::DefineVarNode* variable = (ASTREE::DefineVarNode*)$2;
 		variable -> setAllSymbolType($1);
 		statement -> addChildNode(variable);
 		$$ = statement; 
@@ -181,7 +181,7 @@ struct_parameters: struct_parameter {
 // 好像没有定义到 int a, b, a[2]的情况 可以测试编译器的输出 
 // 如果有问题可以尝试用 declaration_specifier declarators_init ';' 来代替
 /* struct_parameter: declaration_specifier ID ';' {
-		ASTREE::DefineVariableNode* var = new ASTREE::DefineVariableNode($2);
+		ASTREE::DefineVarNode* var = new ASTREE::DefineVarNode($2);
 		var -> setAllSymbolType($1);
 		$$ = var;
     }
@@ -190,7 +190,7 @@ struct_parameters: struct_parameter {
 // 可能会涉及到structTable 后续更改
 struct_parameter: declaration_specifier declarators_init ';' {
 	ASTREE::RootNode* statement = new ASTREE::StatementNode(ASTREE::definition);
-	ASTREE::DefineVariableNode* variable = (ASTREE::DefineVariableNode*)$2;
+	ASTREE::DefineVarNode* variable = (ASTREE::DefineVarNode*)$2;
 	variable -> setAllSymbolType($1);
 	statement -> addChildNode(variable);
 	$$ = statement;
@@ -198,10 +198,10 @@ struct_parameter: declaration_specifier declarators_init ';' {
 
 // 变量声明符 a a[5]
 variable_declarator: ID {
-		$$ = new ASTREE::DefineVariableNode($1);
+		$$ = new ASTREE::DefineVarNode($1);
     }
     | ID '[' INT ']' {
-        ASTREE::DefineVariableNode* var = new ASTREE::DefineVariableNode($1);
+        ASTREE::DefineVarNode* var = new ASTREE::DefineVarNode($1);
         var -> setALLSymbolType("array");
         var -> setArrayLength($3);
         $$ = var; 
@@ -229,12 +229,12 @@ parameter_list: parameter_list ',' parameter_declaration {
 
 // 参数： 有名 int a  无名 int
 parameter_declaration: declaration_specifier ID {
-		ASTREE::DefineVariableNode* var = new ASTREE::DefineVariableNode($2);
+		ASTREE::DefineVarNode* var = new ASTREE::DefineVarNode($2);
 		var -> setAllSymbolType($1);
 		$$ = var;
 	}
 	| declaration_specifier {
-		ASTREE::DefineVariableNode* var = new ASTREE::DefineVariableNode("");
+		ASTREE::DefineVarNode* var = new ASTREE::DefineVarNode("");
 		var -> setAllSymbolType($1);
 	    $$ = var;
 	}
