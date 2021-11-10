@@ -37,24 +37,24 @@ ws  {delim}+
 "struct"                            { return(STRUCT); }
 "."                                 { return(GETMEMBER); }
 (>=)|(<=)|(==)|(!=)|<|>             { yylval.str=strdup(yytext); return(RELOP); }
-"&"                                 { return(SIGNALAND); }
+"&"                                 { return('&'); }
 "&&"                                { return(AND); }
 "||"                                { return(OR); }
-"!"                                 { return(NOT); }
-"="                                 { return(ASSIGNOP); }
-"+"                                 { return(ADD); }
-"-"                                 { return(MINUS); }
-"*"                                 { return(STAR); }
-"/"                                 { return(DIV); }
-"%"                                 { return(MOD); }
-"("                                 { return(LP); }
-")"                                 { return(RP); }
-"["                                 { return(LB); }
-"]"                                 { return(RB); }
-"{"                                 { return(LC); }
-"}"                                 { return(RC); }
-";"                                 { return(SEMI); }
-","                                 { return(COMMA); }
+"!"                                 { return('!'); }
+"="                                 { return('='); }
+"+"                                 { return('+'); }
+"-"                                 { return('-'); }
+"*"                                 { return('*'); }
+"/"                                 { return('/'); }
+"%"                                 { return('%'); }
+"("                                 { return('('); }
+")"                                 { return(')'); }
+"["                                 { return('['); }
+"]"                                 { return(']'); }
+"{"                                 { return('{'); }
+"}"                                 { return('}'); }
+";"                                 { return(';'); }
+","                                 { return(','); }
 {letter}({letter}|{digit})*         { yylval.str=strdup(yytext); return(ID); }
 {digit}{letter}({letter}|{digit})*  { return(ERRORID); }
 (([1-9]|-){digit}*)|0               { yylval.str=strdup(yytext); return(INT); }
