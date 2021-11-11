@@ -23,7 +23,6 @@ ws  {delim}+
 <COMMENT>{ws}   { printf("inside comment ws\n"); }
 <COMMENT>([^*]|\en)+|.
 <COMMENT><<EOF>>    { printf("Unterminated comment\n"); return 0; }
-"//"/*\n
 
 "int"                               { yylval.str=strdup(yytext); return(TYPE); }
 "void"                              { yylval.str=strdup(yytext); return(TYPE); }

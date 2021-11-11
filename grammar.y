@@ -18,7 +18,7 @@ extern int yylineno;
 
 
 %union {
-    ASTREE: Node* astree;
+    ASTREE::RootNode* astree;
     char* str;
 }
 %locations
@@ -35,7 +35,7 @@ extern int yylineno;
 %right <astree> '!'
 %left '(' ')' '[' ']'
 %nonassoc LOWER_THAN_ELSE
-%token ERROID
+%token ERRORID
 %token <str> ID INT
 %token <str> TYPE
 %token ',' ';' 
@@ -85,7 +85,7 @@ c语言中函数定义时不能省略参数名 此处好像不能检测出该错
 struct a {};
 */
 external_declaration: declaration_specifier declarators_init ';' {
-		ASTREE:: RootNode* statement = new ASTREE::StatementNode(ASTREE::definition);
+		ASTREE::RootNode* statement = new ASTREE::StatementNode(ASTREE::definition);
 		ASTREE::DefineVarNode* variable = (ASTREE::DefineVarNode*)$2;
 		variable -> setAllSymbolType($1);
 		statement -> addChildNode(variable);
@@ -124,9 +124,7 @@ declarators_init: declarator_init {
 a a[10]
 a = 5 a[10] = 5
 */
-declarator_init: variable_declarator {
-      $$ = $1;
-    }
+declarator_init: variable_declarator {$$ = $1;}
     | variable_declarator '=' INT {
         ASTREE::RootNode* operator = new ASTREE::OperatorNode("=", ASTREE::assign);
         ASTREE::RootNode* t = new ASTREE::LiteralNode($3);
@@ -157,13 +155,13 @@ declaration_specifier: TYPE {
 		$$ = strdup(yytext);
 	}
 	| TYPE '*' {
-		$$ = strdup(strcat(yytext, " pointer");
+		$$ = strdup(strcat(yytext, " pointer"));
 	}
 
 // 结构体定义 struct a {}
 struct_definition: STRUCT ID '{' struct_parameters '}' {
 		if(struct_table == NULL) {
-			struct_table = new SMB:StructTable();
+			struct_table = new SMB::StructTable();
 		}
 		SMB::StructSymbol* current_struct = new SMB::StructSymbol($2, $4);
 		struct_table -> addStruct(current_struct);
@@ -210,7 +208,7 @@ variable_declarator: ID {
     }
     | ID '[' INT ']' {
         ASTREE::DefineVarNode* var = new ASTREE::DefineVarNode($1);
-        var -> setALLSymbolType("array");
+        var -> setAllSymbolType("array");
         var -> setArrayLength($3);
         $$ = var; 
     }
@@ -265,7 +263,7 @@ expression: expression '=' expression{									/* 赋值运算 */
 		$$ = assignOpNode;
 	}
 	| expression AND expression {										/* 与运算 */
-		RootNode* andOpNode = new ASTREE::OperatorNode("&&", ASTREE:and_op);
+		RootNode* andOpNode = new ASTREE::OperatorNode("&&", ASTREE::and_op);
 		andOpNode -> addChildNode($1);
 		$1 -> addPeerNode($3);
 		$$ = andOpNode;
@@ -274,14 +272,9 @@ expression: expression '=' expression{									/* 赋值运算 */
 		RootNode* orOpNode = new ASTREE::OperatorNode("||", ASTREE::or_op);
 		orOpNode -> addChildNode($1);
 		$1 -> addPeerNode($3);
-		$$ = temp;
+		$$ = orOpNode;
 	}
-	| expression RELOP expression {										/* 比较运算 */
-		RootNode* relopNode = new ASTREE::OperatorNode($2, ASTREE::relop);
-		relopNode -> addChildNode($1);
-		$1 -> addPeerNode($3);
-		$$ = relopNode;
-	}
+	
 	| expression '+' expression {										/* 加运算 */
 		RootNode* addOpNode = new ASTREE::OperatorNode("+", ASTREE::add);
 		addOpNode -> addChildNode($1);
@@ -321,7 +314,7 @@ expression: expression '=' expression{									/* 赋值运算 */
 	| '!' expression {													/* 非运算（单目） */
 		RootNode* notOpNode = new ASTREE::OperatorNode("!", ASTREE::not_op);
 		notOpNode -> addChildNode($1);
-		$1 -> addCousinNode($2);
+		$1 -> addPeerNode($2);
 		$$ = notOpNode;
 	}
 	| '(' expression ')' {												/**/
@@ -330,30 +323,30 @@ expression: expression '=' expression{									/* 赋值运算 */
 	| '-' expression {													/* 负值 */
 		RootNode* negNode = new ASTREE::OperatorNode("-", ASTREE::negative);
 		negNode -> addChildNode($2);
-		$$ = temp;
+		$$ = negNode;
 	}
 	| ID '(' argument_expression_list ')' {								/* 调用函数 */
-		RootNode* callNode = new ASTREE::CallFuncNode($1);
-		callNode -> setVarList($3);
-		$$ = temp;
+		ASTREE::CallFuncNode* callNode = new ASTREE::CallFuncNode($1);
+		callNode -> setArgList($3);
+		$$ = callNode;
 	}
 	| ID '(' ')' {														/* 调用无参数函数 */
 		$$ = new ASTREE::CallFuncNode($1);
 	}
 	| ID {
-		$$ = new ASTREE::AssignVarNode($1);
+		$$ = new ASTREE::CallVarNode($1);
 	}
 	| ID '[' expression ']' {											/* 取数组元素，[]内可为expression */
 		RootNode* getVarNode = new ASTREE::OperatorNode("[]", ASTREE::get_arr_var);
-		RootNode* temp = new ASTREE::AssignVarNode($1);
+		RootNode* temp = new ASTREE::CallVarNode($1);
 		getVarNode -> addChildNode(temp);
 		temp -> addPeerNode($3);
 		$$ = getVarNode;
 	}
 	| ID GETMEMBER ID {													/* 获取对象成员属性 */
 		RootNode* getMemberNode = new ASTREE::OperatorNode(".", ASTREE::get_member);
-		ASTREE::AssignVarNode* var1 = new ASTREE::AssignVarNode($1);
-		ASTREE::AssignVarNode* var2 = new ASTREE::AssignVarNode($3);
+		ASTREE::CallVarNode* var1 = new ASTREE::CallVarNode($1);
+		ASTREE::CallVarNode* var2 = new ASTREE::CallVarNode($3);
 		getMemberNode -> addChildNode(var1);
 		var1 -> addPeerNode(var2);
 		$$ = getMemberNode;
@@ -363,13 +356,13 @@ expression: expression '=' expression{									/* 赋值运算 */
 	}
 	| '*' ID {															/* 指针取值 */
 		RootNode* starNode = new ASTREE::OperatorNode("*", ASTREE::get_value);
-		ASTREE::AssignVarNode* var = new ASTREE::AssignVarNode($2);
+		ASTREE::CallVarNode* var = new ASTREE::CallVarNode($2);
 		starNode -> addChildNode(var);
 		$$ = starNode;
 	}
 	| '&' ID {															/* 取地址 */
 		RootNode* getAddressNode = new ASTREE::OperatorNode("&", ASTREE::get_address);
-		RootNode* temp = new ASTREE::AssignVarNode($2);
+		RootNode* temp = new ASTREE::CallVarNode($2);
 		getAddressNode -> addChildNode(temp);
 		$$ = getAddressNode;
 	}
@@ -381,7 +374,7 @@ argument_expression_list: expression {
 		$$ = $1;
 	}
 	| argument_expression_list ',' expression {
-		$1 -> getLastCousionNode() -> addPeerNode($3);
+		$1 -> getLastPeerNode() -> addPeerNode($3);
 		$$ = $1;
 	}
 	;	
@@ -399,7 +392,7 @@ block_list: block_list statement {
         $1->getLastPeerNode()->addPeerNode($2);
     }
     | statement {
-		$$ = $1
+		$$ = $1;
 	}
     ;
 	
@@ -473,7 +466,7 @@ statement: expression ';' {
     }
     | WHILE '(' expression ')' statement {
         RootNode* t= new ASTREE::LoopNode("", ASTREE::while_loop, $3);
-        temp->addChildNode($5);
+        t->addChildNode($5);
         $$ = t;
     }
     | FOR '(' ';' ';' ')' statement{
@@ -483,7 +476,7 @@ statement: expression ';' {
     }
     | FOR '(' definition ';' ';' ')' statement{
         RootNode* t= new ASTREE::LoopNode("", ASTREE::for_loop, NULL, $3, NULL);
-        temp->addChildNode($7);
+        t->addChildNode($7);
         $$ = t;
     }
     | FOR '(' ';' expression ';' ')' statement{ 
