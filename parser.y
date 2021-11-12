@@ -126,11 +126,11 @@ a = 5 a[10] = 5
 */
 declarator_init: variable_declarator {$$ = $1;}
     | variable_declarator '=' INT {
-        ASTREE::RootNode* operator = new ASTREE::OperatorNode("=", ASTREE::assign);
+        ASTREE::RootNode* ope = new ASTREE::OperatorNode("=", ASTREE::assign);
         ASTREE::RootNode* t = new ASTREE::LiteralNode($3);
-        operator -> addChildNode($1)
+        ope -> addChildNode($1)
         $1 -> addPeerNode(t);
-        $$ = operator;
+        $$ = ope;
     }
     ;
 
