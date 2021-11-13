@@ -27,16 +27,4 @@ Linux
 
 在项目根目录下执行以下命令：
 
-bison -d grammar.y
-
-flex lexical.l
-
-g++ -o grammar.o grammar.tab.c lex.yy.c -lfl
-
-./grammar.o input.cpp
-
-或者，在项目根目录下执行：
-
-make
-
-./grammar.o input.cpp
+sh test.sh
