@@ -1,6 +1,6 @@
 %x COMMENT
 %{
-#include "grammar.tab.h"
+#include "./CompiledParser/parser.tab.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
