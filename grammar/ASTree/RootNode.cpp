@@ -119,7 +119,7 @@ ASTREE::RootNode::~RootNode() {
     }
 }
 // for test
-int main() {
+/*int main() {
      ASTREE::RootNode* r[11];
      for (int i = 0; i < 11; i++) {
          char* a = (char*)malloc(sizeof(char) * 5);
@@ -138,4 +138,4 @@ int main() {
      r[6]->addPeerNode(r[10]);
      r[0]->printTree();
      return 0;
- }
+ }*/

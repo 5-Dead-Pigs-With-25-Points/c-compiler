@@ -28,7 +28,7 @@ extern int yylineno;
 %right <astree> '&'    // 取地址运算符应该是右结合
 %left <astree> OR 
 %left <astree> AND
-%left <astree> RELOP 
+%left <str> RELOP 
 %left <astree> '+' '-'
 %left <astree> '*' '/' '%'
 %right <astree> '^'     // 幂运算是右结合
@@ -128,7 +128,7 @@ declarator_init: variable_declarator {$$ = $1;}
     | variable_declarator '=' INT {
         ASTREE::RootNode* ope = new ASTREE::OperatorNode("=", ASTREE::assign);
         ASTREE::RootNode* t = new ASTREE::LiteralNode($3);
-        ope -> addChildNode($1)
+        ope -> addChildNode($1);
         $1 -> addPeerNode(t);
         $$ = ope;
     }
@@ -311,6 +311,12 @@ expression: expression '=' expression{									/* 赋值运算 */
 		$1 -> addPeerNode($3);
 		$$ = powOpNode;
 	}
+	| expression RELOP expression {
+		RootNode* temp = new ASTREE::OperatorNode($2, ASTREE::relop);
+		temp->addChildNode($1);
+		$1->addPeerNode($3);
+		$$ = temp;
+        }
 	| '!' expression {													/* 非运算（单目） */
 		RootNode* notOpNode = new ASTREE::OperatorNode("!", ASTREE::not_op);
 		notOpNode -> addChildNode($1);
