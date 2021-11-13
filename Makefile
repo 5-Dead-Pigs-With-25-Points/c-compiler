@@ -19,11 +19,11 @@ ifeq ($(GRAMMAREXIST), notexist)
 	mkdir $(GRAMMARDIR)
 endif
 	$(BISON) --output="./CompiledParser/parser.tab.cpp" --defines="./CompiledParser/parser.tab.h" ./parser.y
-  $(FLEX) --outfile="./CompiledParser/lexer.flex.cpp" ./lexical.l
-  sed -i "1i\#include \"../grammar/Nodes.h\"" ./CompiledParser/parser.tab.h
+	$(FLEX) --outfile="./CompiledParser/lexer.flex.cpp" ./lexical.l
+	sed -i "1i\#include \"../grammar/Nodes.h\"" ./CompiledParser/parser.tab.h
 
 %.o: %.cpp $(DEPS)
-  $(CXX) -c $< -o $@ -std=$(CXXVER) -g
+	$(CXX) -c $< -o $@ -std=$(CXXVER) -g
 
 clean:
-  rm -rf $(GRAMMARDIR) $(OBJS) $(PROGRAM)
+	rm -rf $(GRAMMARDIR) $(OBJS) $(PROGRAM)
