@@ -4,6 +4,8 @@
 #include <fstream>
 #include "./grammar/Nodes.h"  
 
+using namespace std;
+
 using ASTREE::RootNode;
 using SMB::StructTable;
 class RootNode;
@@ -35,6 +37,7 @@ extern int yylineno;
 %right <astree> '!'
 %left '(' ')' '[' ']'
 %nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
 %token ERRORID
 %token <str> ID INT
 %token <str> TYPE
@@ -87,6 +90,7 @@ struct a {};
 external_declaration: declaration_specifier declarators_init ';' {
 		ASTREE::RootNode* statement = new ASTREE::StatementNode(ASTREE::definition);
 		ASTREE::DefineVarNode* variable = (ASTREE::DefineVarNode*)$2;
+		cout << $1 << endl;
 		variable -> setAllSymbolType($1);
 		statement -> addChildNode(variable);
 		$$ = statement; 
@@ -136,7 +140,8 @@ declarator_init: variable_declarator {$$ = $1;}
 
 
 // 声明说明符
-/*declaration_specifier: INT {
+/*
+declaration_specifier: INT {
       $$ = strdup("int");
     }
     | VOID {
@@ -151,11 +156,12 @@ declarator_init: variable_declarator {$$ = $1;}
     ;
 */
 /* 按照词法分析器中的匹配，统一使用TYPE，注意declaration_specifier是char*类型 */
+
 declaration_specifier: TYPE {
-		$$ = strdup(yytext);
+		$$ = $1;
 	}
 	| TYPE '*' {
-		$$ = strdup(strcat(yytext, " pointer"));
+		$$ = strcat($1, " pointer");
 	}
 
 // 结构体定义 struct a {}
@@ -535,7 +541,8 @@ int main(int argc, char* argv[]){
 	
 	// 打印语法树
 	if(root) root -> printTree();
-	
+	SMB::SymbolTable* root_symbol_table = new SMB::SymbolTable(NULL, false);
+	SMB::tree(root_symbol_table, root, 0);
 	if(root) delete root;
 	return 0;
 }

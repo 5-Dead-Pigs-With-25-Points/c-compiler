@@ -11,5 +11,6 @@
 #include "./ASTree/VarNode.h"
 #include "./symbol/SymbolType.h"
 #include "./symbol/symbol.h"
+#include "./SymbolTableTree.h"
 
 #endif

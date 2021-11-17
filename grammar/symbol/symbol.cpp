@@ -2,6 +2,8 @@
 #include <string>
 #include <stack>
 
+using namespace std;
+
 SMB::SymbolTable* SMB::SymbolTable::global_table;
 
 SMB::Symbol::Symbol() {
@@ -68,7 +70,7 @@ SMB::StructSymbol::StructSymbol(std::string name, ASTREE::RootNode* node){
     int offset = 0;
     this->name = name;
     this->type = SMB::struct_type;
-    std::cout << "struct_name: " << name << std::endl;
+    // std::cout << "struct_name: " << name << std::endl;
     ASTREE::RootNode *curr_node = node;
     while(curr_node){
         ASTREE::DefineVarNode *var = (ASTREE::DefineVarNode*)curr_node;
@@ -114,9 +116,7 @@ bool SMB::StructTable::addStruct(StructSymbol *curr_struct){
 
 
 
-SMB::SymbolTable::SymbolTable() {
-    this->table_name = "Global";
-}
+
 
 void SMB::SymbolTable::addFromFunctionArgs(FuncSymbol *func_node) {
     ASTREE::RootNode* args = func_node->getArgList();
@@ -135,12 +135,16 @@ void SMB::SymbolTable::addFromFunctionArgs(FuncSymbol *func_node) {
             SMB::Symbol *arg_symbol = new SMB::Symbol(arg->getContent(),arg->getSymbolType());
             arg_symbol->setIndex(index--);
             arg_symbol->setOffset(offset);
-            std::cout<< "add symbol:" << arg_symbol->getName() << " in " << this->getTableName() <<std::endl;
+            std::cout<< "add symbol:" << arg_symbol->getName() << " in " << this->getTableName() << " offset: " << arg_symbol->getOffset() << std::endl;
             symbol_hash_map[arg_symbol->getName()] = arg_symbol;
         }
         tmp_stack.pop();
     }
     this->total_arg_offset = -(offset+4);
+}
+
+SMB::SymbolTable::SymbolTable() {
+    this->table_name = "Global";
 }
 
 SMB::SymbolTable::SymbolTable(SymbolTable *parent, bool is_func) {
@@ -149,14 +153,18 @@ SMB::SymbolTable::SymbolTable(SymbolTable *parent, bool is_func) {
     this->cousin_table = NULL;
     this->is_func = is_func;
     this->table_name = "Unnamed";
-    
     // 遍历找到根作用域
     SymbolTable *p = this;
-    while (!p->is_func)
+    
+    
+    while (!p->is_func && p->parent_table != NULL)
     {
         p = p->parent_table;
     }
+    
+    
     this->root_table = p;   
+    
     this->total_symbol_count = 0;
     this->total_offset = 4;
     this->symbol_list = new std::vector<SMB::Symbol *>();
@@ -196,17 +204,20 @@ SMB::Symbol* SMB::SymbolTable::findInTable(const std::string name){
 }
 
 int SMB::SymbolTable::addSymbol(ASTREE::RootNode *node){
+    cout << "tablename:" << this->getTableName() << endl;
     std::string name = node->getContent();
     ASTREE::ASTNodeType node_type = node->getASTNodeType();
     ASTREE::DefineVarNode* tmp = (ASTREE::DefineVarNode*)node;
     SMB::SymbolType symbol_type = tmp->getSymbolType();
-    // std::cout<<"name:"<<name<<"node_type:"<<node_type<<std::endl;
+    // std::cout<<"name:"<<name<<" node_type:"<<node_type<<std::endl;
     Symbol *s = new Symbol(name, symbol_type);
     if((this->findInTable(name)) == NULL){
         this->root_table->symbol_list->push_back(s);
         s->setIndex(this->root_table->total_symbol_count++);
         s->setOffset(this->root_table->total_offset);
         //offset的地方可能还需要修改
+        // cout << "symbol_type:" << symbol_type << endl;
+        // cout << "SMB::" << SMB::SymbolType::integer << endl;
         if(symbol_type == SMB::SymbolType::integer || symbol_type == SMB::SymbolType::pointer){
             this->root_table->total_offset += INT_OFFSET;
         }
@@ -214,7 +225,10 @@ int SMB::SymbolTable::addSymbol(ASTREE::RootNode *node){
         //     this->root_table->total_offset += tmp->getArrayLength()*4;
         // }
         this->symbol_hash_map[s->getName()] = s;
-        // std::cout<< "add symbol:" << s->getName() << " in " << this->getTableName() <<std::endl;
+        // std::cout << "total_offset:" << this->root_table->total_offset << std::endl;
+        // std::cout << "arg_symbol: getoffset " << s->getOffset() << std::endl;
+        // std::cout << "add:" << &s << std::endl;
+        std::cout<< "add symbol:" << s->getName() << " in " << this->getTableName() << " offset:" << s->getOffset() <<std::endl;
         return SUCCESS;
     }else{
         // 重定义了
@@ -228,13 +242,18 @@ int SMB::SymbolTable::addFuncSymbol(SMB::FuncSymbol *func_symbol){
         this->root_table->symbol_list->push_back(func_symbol);
         //func_symbol->setIndex(this->root_table->total_symbol_count++);
         //offset部分
+        
+        func_symbol->setOffset(this->root_table->total_offset);
+        this->root_table->total_offset += 4;
+
+        
         std::string tmp_func_name = func_symbol->getDecName();
         this->symbol_hash_map[tmp_func_name]=func_symbol;
         if((this->symbol_hash_map[tmp_func_name])==NULL){
-            // std::cout<<"wrong"<<std::endl;
+            std::cout<<"wrong"<<std::endl;
         }
         std::string tmp = ((SMB::FuncSymbol*)(this->symbol_hash_map[tmp_func_name]))->getDecName();
-        // std::cout<< "add function:" << tmp << " in " << this->getTableName() << std::endl;
+        std::cout<< "add function:" << tmp << " in " << this->getTableName() << " offset:" << func_symbol->getOffset() << std::endl;
         return SUCCESS;
     }else{
         //重定义
@@ -258,7 +277,7 @@ int SMB::SymbolTable::addStructSymbol(std::string struct_type, std::string id_na
             s->setOffset(this->root_table->total_offset);
             this->root_table->total_offset += target->getTotalMemberOffset();
             this->symbol_hash_map[s->getName()] = s;
-            // std::cout<< "add struct symbol:" << s->getName() << " in " << this->getTableName() <<std::endl;
+            std::cout<< "add struct symbol:" << s->getName() << " in " << this->getTableName() << " offSet:" << s->getOffset() <<std::endl;
             return SUCCESS;
         }
     }
@@ -275,9 +294,9 @@ int SMB::SymbolTable::addArraySymbol(ASTREE::RootNode *array_node){
         s->setIndex(this->root_table->total_symbol_count++);
         s->setOffset(this->root_table->total_offset);
         this->root_table->total_offset += curr_array->getArrayLength()*4;
-        //std::cout<<"total_offset:"<<this->root_table->total_offset<<std::endl<<"total_:"<<this->total_offset<<std::endl;
+        std::cout<<"total_offset:"<<this->root_table->total_offset<<std::endl<<"total_:"<<this->total_offset<<std::endl;
         this->symbol_hash_map[array_name] = s;
-        //std::cout<< "add array:" << s->getName() << " in " << this->getTableName() <<std::endl;
+        std::cout<< "add array:" << s->getName() << " in " << this->getTableName() << " offset:" << s->getOffset() <<std::endl;
         return SUCCESS;
     }
 }
