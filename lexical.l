@@ -56,6 +56,7 @@ ws  {delim}+
 {letter}({letter}|{digit})*         { yylval.str=strdup(yytext); return(ID); }
 {digit}{letter}({letter}|{digit})*  { return(ERRORID); }
 (([1-9]|-){digit}*)|0               { yylval.str=strdup(yytext); return(INT); }
+({letter}|{digit}|(%[a-z]))*	     { yylval.str=strdup(yytext); return(STR); }
 [ \t\v\f\r\n]                       { }
 
 %%

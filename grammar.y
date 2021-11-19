@@ -39,7 +39,7 @@ extern int yylineno;
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 %token ERRORID
-%token <str> ID INT
+%token <str> ID INT STR
 %token <str> TYPE
 %token ',' ';' 
 %token STRUCT
@@ -305,6 +305,9 @@ expression: expression '=' expression{									/* 赋值运算 */
 		$1 -> addPeerNode($3);
 		$$ = divOpNode;
 	}
+	|  STR {
+		$$ = new ASTREE::CallVarNode($1);
+	}
 	| expression '%' expression {										/* 取模运算 */
 		RootNode* modOpNode = new ASTREE::OperatorNode("%", ASTREE::mod);
 		modOpNode -> addChildNode($1);
@@ -370,13 +373,13 @@ expression: expression '=' expression{									/* 赋值运算 */
 		RootNode* starNode = new ASTREE::OperatorNode("*", ASTREE::get_value);
 		ASTREE::CallVarNode* var = new ASTREE::CallVarNode($2);
 		starNode -> addChildNode(var);
-		$$ = starNode;
+		$$ = var;
 	}
 	| '&' ID {															/* 取地址 */
 		RootNode* getAddressNode = new ASTREE::OperatorNode("&", ASTREE::get_address);
 		RootNode* temp = new ASTREE::CallVarNode($2);
 		getAddressNode -> addChildNode(temp);
-		$$ = getAddressNode;
+		$$ = temp;
 	}
 	| error ')' {yyerrok;}
 	;
