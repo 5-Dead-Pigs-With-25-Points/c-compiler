@@ -5,6 +5,7 @@
 #include "./ASTree/LoopNode.h"
 #include "./ASTree/StmtNode.h"
 #include "./symbol/symbol.h"
+#include "./ASTree/SelectNode.h"
 
 namespace SMB {
     void tree(SymbolTable* table, ASTREE::RootNode* node, int depth);

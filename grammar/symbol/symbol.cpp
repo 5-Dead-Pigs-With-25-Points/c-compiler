@@ -218,9 +218,10 @@ int SMB::SymbolTable::addSymbol(ASTREE::RootNode *node){
         //offset的地方可能还需要修改
         // cout << "symbol_type:" << symbol_type << endl;
         // cout << "SMB::" << SMB::SymbolType::integer << endl;
-        if(symbol_type == SMB::SymbolType::integer || symbol_type == SMB::SymbolType::pointer){
-            this->root_table->total_offset += INT_OFFSET;
-        }
+        //if(symbol_type == SMB::SymbolType::integer || symbol_type == SMB::SymbolType::pointer){
+        //    this->root_table->total_offset += INT_OFFSET;
+        //}
+        this->root_table->total_offset += INT_OFFSET;
         // } else if(symbol_type == SMB::SymbolType::array) {
         //     this->root_table->total_offset += tmp->getArrayLength()*4;
         // }

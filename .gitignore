@@ -5,3 +5,6 @@
 *.filters
 *.user
 /.idea/
+*.o
+*.flex.*
+*.tab.*

@@ -23,13 +23,16 @@ void SMB::tree(SMB::SymbolTable* table, ASTREE::RootNode* node, int depth){
             return;
         }
     } else if (node->getASTNodeType() == ASTREE::select) {
-        std::cout << "====================" << node->getChildNode() << std::endl;
         SMB::SymbolTable* child_table = table->createChildTable(false);
         child_table->setTableName("select");
-        tree(child_table,node->getChildNode(), depth + 1);
+        
+        ASTREE::SelectNode *select_node = (ASTREE::SelectNode*) node;
+        
+        tree(child_table, select_node->getBodyNode(), depth + 1);
         tree(table,node->getPeerNode(), depth);
         return;
-    } else if (node->getASTNodeType() == ASTREE::loop) {
+        }
+        else if (node->getASTNodeType() == ASTREE::loop) {
         ASTREE::LoopNode *loop_node = (ASTREE::LoopNode*) node;
         SMB::SymbolTable* child_table = table->createChildTable(false);
         child_table->setTableName("loop");

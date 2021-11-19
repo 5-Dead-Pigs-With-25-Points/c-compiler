@@ -51,8 +51,8 @@ extern int yylineno;
 %type <str> declaration_specifier
 %type <astree> struct_parameter struct_parameters struct_definition
 %type <astree> variable_declarator function_declarator parameter_list parameter_declaration
-%type <astree> compound_statement block_list
-%type <astree> expression argument_expression_list statement definition declaration_list declaration
+%type <astree> compound_statement block_list for_definition
+%type <astree> expression argument_expression_list statement definition declaration_list declaration 
 %type <astree> declarators_init declarator_init
 
 %%
@@ -305,9 +305,6 @@ expression: expression '=' expression{									/* 赋值运算 */
 		$1 -> addPeerNode($3);
 		$$ = divOpNode;
 	}
-	|  STR {
-		$$ = new ASTREE::CallVarNode($1);
-	}
 	| expression '%' expression {										/* 取模运算 */
 		RootNode* modOpNode = new ASTREE::OperatorNode("%", ASTREE::mod);
 		modOpNode -> addChildNode($1);
@@ -328,8 +325,7 @@ expression: expression '=' expression{									/* 赋值运算 */
         }
 	| '!' expression {													/* 非运算（单目） */
 		RootNode* notOpNode = new ASTREE::OperatorNode("!", ASTREE::not_op);
-		notOpNode -> addChildNode($1);
-		$1 -> addPeerNode($2);
+		notOpNode -> addChildNode($2);
 		$$ = notOpNode;
 	}
 	| '(' expression ')' {												/**/
@@ -347,6 +343,9 @@ expression: expression '=' expression{									/* 赋值运算 */
 	}
 	| ID '(' ')' {														/* 调用无参数函数 */
 		$$ = new ASTREE::CallFuncNode($1);
+	}
+	| STR {
+		$$ = new ASTREE::CallVarNode($1);
 	}
 	| ID {
 		$$ = new ASTREE::CallVarNode($1);
@@ -440,6 +439,10 @@ declaration: variable_declarator{ $$ = $1; }
     }
 ;
 
+for_definition: definition { $$ = $1;}
+	| expression {$$ = $1;}
+	;
+
 /* statement 语句 */
 statement: expression ';' { 
         RootNode* t= new ASTREE::StatementNode(ASTREE::expression);
@@ -489,7 +492,7 @@ statement: expression ';' {
         t->addChildNode($6);
         $$ = t;
     }
-    | FOR '(' definition ';' ';' ')' statement{
+    | FOR '(' for_definition ';' ';' ')' statement{
         RootNode* t= new ASTREE::LoopNode("", ASTREE::for_loop, NULL, $3, NULL);
         t->addChildNode($7);
         $$ = t;
@@ -504,17 +507,17 @@ statement: expression ';' {
         t->addChildNode($7);
         $$ = t;
     }
-    | FOR '(' definition ';' expression ';' expression ')' statement {
+    | FOR '(' for_definition ';' expression ';' expression ')' statement {
         RootNode* t= new ASTREE::LoopNode("", ASTREE::for_loop, $5, $3, $7);
         t->addChildNode($9);
         $$ = t;
     }
-    | FOR '(' definition ';' expression ';' ')' statement  {
+    | FOR '(' for_definition ';' expression ';' ')' statement  {
         RootNode* t= new ASTREE::LoopNode("", ASTREE::for_loop, $5, $3, NULL);
         t->addChildNode($8);
         $$ = t;
     }
-    | FOR '(' definition ';' ';' expression ')' statement  {
+    | FOR '(' for_definition ';' ';' expression ')' statement  {
         RootNode* t = new ASTREE::LoopNode("", ASTREE::for_loop, NULL, $3, $6);
         t->addChildNode($8);
         $$ = t;

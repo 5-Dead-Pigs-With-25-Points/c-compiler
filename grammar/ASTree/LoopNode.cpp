@@ -47,11 +47,17 @@ ASTREE::LoopNode::LoopNode(std::string content,
     : RootNode(content, ASTREE::loop) {
     this->loop_type = loop_type;
     this->cond = cond;
-    cond->setParentNode(this);
+    if(cond != NULL){
+	    cond->setParentNode(this);
+    }
     this->declare = dec;
-    dec->setParentNode(this);
+    if(dec != NULL){
+	    dec->setParentNode(this);
+	}
     this->action = action;
-    action->setParentNode(this);
+    if (action !=NULL){
+	    action->setParentNode(this);
+	}
 }
 
 void ASTREE::LoopNode::printInfo(int) {
