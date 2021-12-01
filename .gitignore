@@ -5,3 +5,7 @@
 *.filters
 *.user
 /.idea/
+/.vscode/
+*.o
+*.flex.*
+*.tab.*
