@@ -28,7 +28,7 @@ void ASTREE::DefineFunctionNode::setReturnSymbolType(std::string symbol_type) {
 }
 
 void ASTREE::DefineFunctionNode::printInfo(int) {
-    std::cout << "function defination: " << this->content;
+    std::cout << "function definition: " << this->content;
     ASTREE::RootNode* args = this->arg_list;
     std::string str = ", args: ";
     while (args) {

@@ -17,10 +17,10 @@ ASTREE::DefineVarNode::DefineVarNode(std::string content) : RootNode(content, AS
 
 void ASTREE::DefineVarNode::printInfo(int) {
     if (this->symbol_type == SMB::SymbolType::array) {
-        std::cout << "array defination: " << this->content << "length: " << this->array_length;
+        std::cout << "array definition: " << this->content << " length: " << this->array_length;
     }
     else {
-        std::cout << "variable defination: " << this->content;
+        std::cout << "variable definition: " << this->content;
     }
 }
 
