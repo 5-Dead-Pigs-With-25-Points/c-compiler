@@ -371,7 +371,7 @@ SMB::SymbolTable* IM::InterMediate::generateStatement(ASTREE::StatementNode* nod
   return symbol_table;
 }
 
-SMB::SymbolTable* IM::InterMediate::generateReturn(ASTREE::StatementNode* node, SMB::SymbolTable* symbol_table)
+void IM::InterMediate::generateReturn(ASTREE::StatementNode* node, SMB::SymbolTable* symbol_table)
 {
   ASTREE::RootNode* p = node->getChildNode();
   Quaternion* temp;
