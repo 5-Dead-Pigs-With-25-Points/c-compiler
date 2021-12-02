@@ -1066,11 +1066,11 @@ void IM::InterMediate::backPatch(std::list<int>* backList, int target) {
 // 打印中间代码（四元组形式）
 void IM::InterMediate::print() {
   std::vector<Quaternion>::iterator it = this->quads.begin();
-  std::cout << "\t   Operator   \targ1\targ2\tresult" << std::endl;
+  std::cout << "No. (Operator,Arg1,Arg2,Result)" << std::endl;
   int count = 0;  // 表示指令的序号
   for (; it != this->quads.end(); it++)
   {
-    std::cout << count++ << "\t";
+    std::cout << count++ << ' ';
     if (&(*it) == NULL) std::cout << "NULL \n";
     else it->print();
   }

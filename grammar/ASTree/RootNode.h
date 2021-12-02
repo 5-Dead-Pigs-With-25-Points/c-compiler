@@ -21,6 +21,8 @@ namespace ASTREE {
 
     static std::string prefix[2] = {"└─ ", "├─ "};
     static std::string separator[2] = {"│  ", "   "};
+    //static std::string prefix[2] = {"+-- ", "+- "};
+    //static std::string separator[2] = {"|  ", "   "};
 
     class RootNode {
         private:
