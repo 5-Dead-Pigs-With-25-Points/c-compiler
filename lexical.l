@@ -53,6 +53,12 @@ string \".*\"
 "}"                                 { return('}'); }
 ";"                                 { return(';'); }
 ","                                 { return(','); }
+"++"                                { return(DPLUS); }
+"--"                                { return(DMINUS); }
+"+="                                { return(PLUS_ASSIGN); }
+"-="                                { return(MINUS_ASSIGN); }
+"*="                                { return(MULTI_ASSIGN); }      
+"/="                                { return(DIV_ASSIGN); }
 {letter}({letter}|{digit})*         { yylval.str=strdup(yytext); return(ID); }
 {digit}{letter}({letter}|{digit})*  { return(ERRORID); }
 (([1-9]|-){digit}*)|0               { yylval.str=strdup(yytext); return(INT); }

@@ -32,7 +32,25 @@ namespace ASTREE {
         assign_arr = 16, // []=
         assign_member = 17, // a.b=
 
-        negative = 18 // -
+        negative = 18, // -
+        
+        before_dplus = 19, // ++i
+        after_dplus = 20, // i++
+        before_dminus = 21, // --i
+        after_dminus = 22, // i--
+        multi_assign = 23, // *=
+        div_assign = 24, // /=
+        plus_assign = 25, // +=
+        minus_assign = 26, // -=
+        multi_assign_arr = 27, // []*=
+        multi_assign_member = 28, // a.b *=
+        div_assign_arr = 29, // []/=
+        div_assign_member = 30, // a.b /=
+        plus_assign_arr = 31, // [] +=
+        plus_assign_member = 32, // a.b +=
+        minus_assign_arr = 33, // [] -=
+        minus_assign_member = 34, // a.b -=
+        
     };
     
     class OperatorNode: public RootNode {
