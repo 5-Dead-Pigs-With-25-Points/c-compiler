@@ -13,14 +13,14 @@ IM::InterMediate::InterMediate(ASTREE::RootNode* root_node, SMB::StructTable* st
   this->buildInFunctionRegister();
 }
 
-//?
+// build-in function: print_int
 void IM::InterMediate::buildInFunctionRegister()
 {
   ASTREE::DefineVarNode* tmp_arg;
   ASTREE::DefineFunctionNode* tmp_func;
   SMB::FuncSymbol* func_symbol;
 
-  tmp_arg = new ASTREE::DefineVarNode("i"); //?
+  tmp_arg = new ASTREE::DefineVarNode("i");
   tmp_arg->setAllSymbolType("int");
   tmp_func = new ASTREE::DefineFunctionNode("print_int", tmp_arg);
   tmp_func->setReturnSymbolType("void");
@@ -46,7 +46,14 @@ void IM::InterMediate::generate(ASTREE::RootNode* node, SMB::SymbolTable* symbol
   case ASTREE::def_func:
   { // 函数声明的中间代码
     SMB::FuncSymbol* func = new SMB::FuncSymbol(node);
-    this->rootSymbolTable->addFuncSymbol(func);
+    // this->rootSymbolTable->addFuncSymbol(func);
+    
+    if (this->rootSymbolTable->addFuncSymbol(func) == 0){
+            std::cout << "\033[31mError: \033[0m"
+              << "function " << func->getDecName() << " is redeclaration" << std::endl;
+            exit(1);
+    } 
+    
     Quaternion* temp;
     SMB::Symbol* temp_symbol = new SMB::Symbol(func->getDecName(), SMB::void_type);
     temp = new Quaternion(IM::FUNC_DEF, temp_symbol, (SMB::Symbol*)NULL);
@@ -55,6 +62,7 @@ void IM::InterMediate::generate(ASTREE::RootNode* node, SMB::SymbolTable* symbol
     {
       SMB::SymbolTable* child_table = symbol_table->createChildTable(true); //函数的符号表
       child_table->setTableName(func->getDecName());
+      child_table->addFromFunctionArgs(func);
       generate(p, child_table); //
       p = p->getPeerNode();
     }
@@ -330,7 +338,7 @@ void IM::InterMediate::generate(ASTREE::RootNode* node, SMB::SymbolTable* symbol
         backPatch(&Judge_true, Judge_true.back() + 2);
       } else {
       	// for(int i=0;;) condNode == NULL  dead loop
-      	std::cout <<"Cond Node is NULL" << std::endl;
+      	std::cout <<"warn: dead loop!" << std::endl;
       }
       while (p != NULL)  // for的{}内部分
       {
@@ -343,9 +351,7 @@ void IM::InterMediate::generate(ASTREE::RootNode* node, SMB::SymbolTable* symbol
       this->quads.push_back(*temp);
       int end = quads.size();
       if(!isCondEmpty){
-      	std::cout <<"Cond not  NULL" << std::endl;
       	backPatch(&Judge_false, end);  // 回填，跳出for循环的后一条指令序号
-      	std::cout <<"Cond not  NULL ok" << std::endl;
       }
     }
     else if (loop->getLoopType() == ASTREE::while_loop)

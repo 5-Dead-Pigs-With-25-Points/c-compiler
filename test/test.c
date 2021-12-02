@@ -1,4 +1,7 @@
-
+void test_func(int a, int b){
+	a=3;
+	b=4;
+}
 int main(){
 	int a, b=2, c=3;
 	a = 1;
@@ -7,7 +10,7 @@ int main(){
 	while(a < 4)
 	{
 	    a = a + 1;
-	    b = f + 1;
+	    b = f[1] + 1;
 	    int h = 8;
 	}
 	for (int r=1;;){
@@ -20,5 +23,11 @@ int main(){
 	{
 	    int j = 0;
 	}
+	if(b > 1)
+	{
+	    int a = 0;
+	}
+	test_func(b,c);
+	print_int(1);
 	return 0;
 }

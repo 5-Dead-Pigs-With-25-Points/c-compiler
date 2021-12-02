@@ -630,9 +630,10 @@ int main(int argc, char* argv[]){
 	fclose(yyin);
 	
 	// 打印语法树
-	if(root) root -> printTree();
+	/*if(root) root -> printTree();
 	SMB::SymbolTable* root_symbol_table = new SMB::SymbolTable(NULL, false);
 	SMB::tree(root_symbol_table, root, 0);
+	*/
 
 	// 打印中间代码
 	IM::InterMediate *im = new IM::InterMediate(root, struct_table);

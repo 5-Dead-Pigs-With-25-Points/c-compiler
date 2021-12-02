@@ -313,10 +313,11 @@ SMB::SymbolTable* SMB::SymbolTable::createChildTable(bool is_func){
     else{
         SymbolTable *cousin = this->child_table->cousin_table;
         while(cousin != NULL){
-            if(cousin->cousin_table == NULL){
-                cousin->cousin_table = child;
-                break;
+            while(cousin->cousin_table != NULL){
+            	cousin = cousin->cousin_table;
             }
+            cousin->cousin_table = child;
+            break;
         }
     }
     return child;
