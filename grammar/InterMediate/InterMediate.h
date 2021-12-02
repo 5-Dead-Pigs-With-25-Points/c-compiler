@@ -41,7 +41,7 @@ public:
     void generate(ASTREE::RootNode *node, SMB::SymbolTable*);
     // Create a child symbol table to generate follow code.
     SMB::SymbolTable *generateStatement(ASTREE::StatementNode*, SMB::SymbolTable*);
-    SMB::SymbolTable *generateReturn(ASTREE::StatementNode*, SMB::SymbolTable*);
+    void generateReturn(ASTREE::StatementNode*, SMB::SymbolTable*);
     SMB::Symbol *generateOperator(ASTREE::OperatorNode*, SMB::SymbolTable*);
     Quaternion *caculateOperator(OperatorCode, ASTREE::RootNode*, ASTREE::RootNode*, SMB::Symbol*, SMB::SymbolTable*);
     void relopOperator(Quaternion*, Quaternion*, OperatorCode, ASTREE::RootNode*, ASTREE::RootNode*, SMB::SymbolTable*);
