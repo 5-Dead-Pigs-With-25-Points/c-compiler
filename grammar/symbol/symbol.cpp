@@ -195,10 +195,10 @@ SMB::Symbol* SMB::SymbolTable::findInTable(const std::string name){
     std::unordered_map<std::string, SMB::Symbol *>::iterator iter;
     iter = this->symbol_hash_map.find(name);
     if (iter != this->symbol_hash_map.end()) {
-        // std::cout<<"find "<< name << " in " << this->getTableName() <<std::endl;
+        std::cout<<"find "<< name << " in " << this->getTableName() <<std::endl;
         return iter->second;
     } else {
-        // std::cout<<"no "<< name << " in " << this->getTableName() <<std::endl;
+        std::cout<<"no "<< name << " in " << this->getTableName() <<std::endl;
         return NULL;
     }
 }

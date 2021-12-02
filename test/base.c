@@ -3,8 +3,8 @@
 int main() {
     int m = 2;
     // handle IO
-     scanf("%d", &m);
-     printf("%d", (m+100) % 2);
+    //  scanf("%d", &m);
+    //  printf("%d", (m+100) % 2);
 
     int i = 0;
     int factorial = 3;
@@ -13,27 +13,27 @@ int main() {
         result = result * factorial;
         factorial = factorial - 1;
     }
-    printf("%d\n", result % 100);
-/*
-    for (int j = 0; j < result % 100 - 1; j+=1) {
-        for (int k = j + 1; k < result % 100 - 1; k++) {
+    // printf("%d\n", result % 100);
+
+    for (int j = 0; j < result % 100 - 1; j = j + 1) {
+        for (int k = j + 1; k < result % 100 - 1; k = k + 1) {
             
-            printf("Hello ~: %d", j);
+            // printf("Hello ~: %d", j);
             
             if (k - 5 == j || ! j + 2 == k && k - 3 == j) {
                 i = k % (j + 1);
-                printf("1: %d\n", i);
+                // printf("1: %d\n", i);
             } else if (k == j + 3 && k % 2 == 0) {
                 i = k / (j + 1);
-                printf("2: %d\n", i);
+                //printf("2: %d\n", i);
             } else {
-                printf("3: %d\n", i);
-                
-                printf("Aha~ %d", j);
+                // printf("3: %d\n", i);
+                int a = 0;
+                // printf("Aha~ %d", j);
                 
             }
         }
-    }*/
+    }
     return 0;
 }
 

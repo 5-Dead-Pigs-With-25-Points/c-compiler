@@ -8,6 +8,8 @@ IM::InterMediate::InterMediate(ASTREE::RootNode* root_node, SMB::StructTable* st
   this->root = root_node;
   this->rootSymbolTable = new SMB::SymbolTable(false, struct_table);
   SMB::SymbolTable::setGlobalTable(this->rootSymbolTable);
+  std::cout << "rootSymbolTable: " << this->rootSymbolTable << std::endl;
+  std::cout << "struct_table: " << struct_table << std::endl;
   this->buildInFunctionRegister();
 }
 
@@ -37,6 +39,7 @@ void IM::InterMediate::generate(ASTREE::RootNode* node, SMB::SymbolTable* symbol
     std::cout << "node is NULL" << std::endl;
     return;
   }
+  std::cout<<"symbol_table_name: "<<symbol_table->getTableName()<<std::endl;
   ASTREE::RootNode* p = node->getChildNode();
   switch (node->getASTNodeType())
   {
@@ -261,18 +264,74 @@ void IM::InterMediate::generate(ASTREE::RootNode* node, SMB::SymbolTable* symbol
     break;
   }
   case ASTREE::loop: {  // 循环
+    // ASTREE::LoopNode* loop = (ASTREE::LoopNode*)node;
+    // if (loop->getLoopType() == ASTREE::for_loop) {
+    //   SMB::SymbolTable* child_table = symbol_table->createChildTable(false);
+    //   child_table->setTableName("for");
+    //   generate(((ASTREE::LoopNode*)node)->getDeclareNode(), child_table);
+    //   int start = quads.size();
+    //   generate(((ASTREE::LoopNode*)node)->getCondNode(), child_table);  // 这里面会压栈trueList falseList
+    //   std::list<int> Judge_true = trueList.top();
+    //   std::list<int> Judge_false = falseList.top();
+    //   trueList.pop();
+    //   falseList.pop();  // for循环condition部分的条件转移
+    //   backPatch(&Judge_true, Judge_true.back() + 2);
+    //   while (p != NULL)  // for的{}内部分
+    //   {
+    //     generate(p, child_table);
+    //     p = p->getPeerNode();
+    //   }
+    //   generate(((ASTREE::LoopNode*)node)->getActionNode(), child_table);  // for(;;)第三部分
+
+    //   Quaternion* temp = new Quaternion(IM::JUMP, start);  // 回到循环最初
+    //   this->quads.push_back(*temp);
+    //   int end = quads.size();
+    //   backPatch(&Judge_false, end);  // 回填，跳出for循环的后一条指令序号
+    // }
+    // else if (loop->getLoopType() == ASTREE::while_loop)
+    // {
+    //   int start = quads.size();
+    //   generate(((ASTREE::LoopNode*)node)->getCondNode(), symbol_table);
+    //   std::list<int> Judge_true = trueList.top();
+    //   std::list<int> Judge_false = falseList.top();
+    //   trueList.pop();
+    //   falseList.pop();
+    //   backPatch(&Judge_true, Judge_true.back() + 2);
+    //   while (p != NULL) {
+    //     SMB::SymbolTable* child_table = symbol_table->createChildTable(false);
+    //     child_table->setTableName("while");
+    //     generate(p, child_table);
+    //     p = p->getPeerNode();
+    //   }
+
+    //   Quaternion* temp = new Quaternion(IM::JUMP, start);
+    //   this->quads.push_back(*temp);
+    //   int end = quads.size();
+    //   backPatch(&Judge_false, end);
+    // }
+    // break;
     ASTREE::LoopNode* loop = (ASTREE::LoopNode*)node;
     if (loop->getLoopType() == ASTREE::for_loop) {
       SMB::SymbolTable* child_table = symbol_table->createChildTable(false);
       child_table->setTableName("for");
       generate(((ASTREE::LoopNode*)node)->getDeclareNode(), child_table);
       int start = quads.size();
+      bool isCondEmpty = ((ASTREE::LoopNode*)node)->getCondNode() == NULL; 
+      std::list<int> Judge_true;
+      std::list<int> Judge_false;
       generate(((ASTREE::LoopNode*)node)->getCondNode(), child_table);  // 这里面会压栈trueList falseList
-      std::list<int> Judge_true = trueList.top();
-      std::list<int> Judge_false = falseList.top();
-      trueList.pop();
-      falseList.pop();  // for循环condition部分的条件转移
-      backPatch(&Judge_true, Judge_true.back() + 2);
+      if(!isCondEmpty){
+        Judge_true = trueList.top();
+        // std::cout<<"true pop ok"<<std::endl;
+        Judge_false = falseList.top();
+        // std::cout<<"false pop ok"<<std::endl;
+        trueList.pop();
+        falseList.pop();  // for循环condition部分的条件转移
+        backPatch(&Judge_true, Judge_true.back() + 2);
+      } else {
+      	// for(int i=0;;) condNode == NULL  dead loop
+      	std::cout <<"Cond Node is NULL" << std::endl;
+      }
       while (p != NULL)  // for的{}内部分
       {
         generate(p, child_table);
@@ -283,7 +342,11 @@ void IM::InterMediate::generate(ASTREE::RootNode* node, SMB::SymbolTable* symbol
       Quaternion* temp = new Quaternion(IM::JUMP, start);  // 回到循环最初
       this->quads.push_back(*temp);
       int end = quads.size();
-      backPatch(&Judge_false, end);  // 回填，跳出for循环的后一条指令序号
+      if(!isCondEmpty){
+      	std::cout <<"Cond not  NULL" << std::endl;
+      	backPatch(&Judge_false, end);  // 回填，跳出for循环的后一条指令序号
+      	std::cout <<"Cond not  NULL ok" << std::endl;
+      }
     }
     else if (loop->getLoopType() == ASTREE::while_loop)
     {
@@ -319,14 +382,17 @@ void IM::InterMediate::generate(ASTREE::RootNode* node, SMB::SymbolTable* symbol
 
     backPatch(&Judge_true, start);
     // Body:
-    // std::cout << "body: " << select->getBodyNode() << "\n";
-    generate(select->getBodyNode(), symbol_table);
+    SMB::SymbolTable* child_table = symbol_table->createChildTable(false);
+    child_table->setTableName("select-if");
+    generate(select->getBodyNode(), child_table);
     if (select->getElse() != NULL) {
       Quaternion* temp = new Quaternion(IM::JUMP, (int)NULL);  // 
       this->quads.push_back(*temp);
       temp = &quads.back();
       int else_start = quads.size();
-      generate(select->getElse(), symbol_table);
+      SMB::SymbolTable* child_table = symbol_table->createChildTable(false);
+      child_table->setTableName("select-else");
+      generate(select->getElse(), child_table);
       backPatch(&Judge_false, else_start);  // if false 跳转到else这里
       int end = quads.size();
       temp->backPatch(end);
