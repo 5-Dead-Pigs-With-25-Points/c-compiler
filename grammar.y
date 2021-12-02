@@ -28,16 +28,19 @@ extern int yylineno;
 
 %right <astree> '='
 %right <astree> '&'    // 取地址运算符应该是右结合
+%right <astree> PLUS_ASSIGN MINUS_ASSIGN MULTI_ASSIGN DIV_ASSIGN
 %left <astree> OR 
 %left <astree> AND
 %left <str> RELOP 
 %left <astree> '+' '-'
 %left <astree> '*' '/' '%'
+%left DPLUS
 %right <astree> '^'     // 幂运算是右结合
 %right <astree> '!'
 %left '(' ')' '[' ']'
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
+%token <astree> DPLUD DMINUS
 %token ERRORID
 %token <str> ID INT STR
 %token <str> TYPE
@@ -379,6 +382,86 @@ expression: expression '=' expression{									/* 赋值运算 */
 		RootNode* temp = new ASTREE::CallVarNode($2);
 		getAddressNode -> addChildNode(temp);
 		$$ = temp;
+	}
+	| ID DPLUS {
+		RootNode* dplusOpNode = new ASTREE::OperatorNode("++", ASTREE::after_dplus);
+		RootNode* temp = new ASTREE::CallVarNode($1);
+		dplusOpNode -> addChildNode(temp);
+		$$ = dplusOpNode;
+	}
+	| DPLUS ID {
+		RootNode* dplusOpNode = new ASTREE::OperatorNode("++", ASTREE::before_dplus);
+		RootNode* temp = new ASTREE::CallVarNode($2);
+		dplusOpNode -> addChildNode(temp);
+		$$ = dplusOpNode;
+	}
+	| ID DMINUS {
+	        RootNode* dminusOpNode = new ASTREE::OperatorNode("--", ASTREE::after_dminus);
+		RootNode* temp = new ASTREE::CallVarNode($1);
+		dminusOpNode -> addChildNode(temp);
+		$$ = dminusOpNode;
+	}
+	| DMINUS ID{
+		RootNode* dminusOpNode = new ASTREE::OperatorNode("--", ASTREE::before_dminus);
+		RootNode* temp = new ASTREE::CallVarNode($2);
+		dminusOpNode -> addChildNode(temp);
+		$$ = dminusOpNode;
+	}
+	| expression PLUS_ASSIGN expression {
+		RootNode* plusAssignOpNode = new ASTREE::OperatorNode("+=", ASTREE::plus_assign);
+		if($1->getASTNodeType() == ASTREE::op) {
+			ASTREE::OperatorNode *leftOpNode = (ASTREE::OperatorNode *)$1;
+			if(leftOpNode->getOpType() == ASTREE::get_member) {			/* 对对象属性赋值 */
+				leftOpNode->setOpType(ASTREE::plus_assign_member);
+			} else if(leftOpNode->getOpType() == ASTREE::get_arr_var) {	/* 对数组元素赋值 */
+				leftOpNode->setOpType(ASTREE::plus_assign_arr);
+			}
+		}
+		plusAssignOpNode -> addChildNode($1);
+		$1 -> addPeerNode($3);
+		$$ = plusAssignOpNode;
+	}
+	| expression MINUS_ASSIGN expression {
+		RootNode* minusAssignOpNode = new ASTREE::OperatorNode("-=", ASTREE::minus_assign);
+		if($1->getASTNodeType() == ASTREE::op) {
+			ASTREE::OperatorNode *leftOpNode = (ASTREE::OperatorNode *)$1;
+			if(leftOpNode->getOpType() == ASTREE::get_member) {			/* 对对象属性赋值 */
+				leftOpNode->setOpType(ASTREE::minus_assign_member);
+			} else if(leftOpNode->getOpType() == ASTREE::get_arr_var) {	/* 对数组元素赋值 */
+				leftOpNode->setOpType(ASTREE::minus_assign_arr);
+			}
+		}
+		minusAssignOpNode -> addChildNode($1);
+		$1 -> addPeerNode($3);
+		$$ = minusAssignOpNode;
+	}
+	| expression MULTI_ASSIGN expression {
+		RootNode* multiAssignOpNode = new ASTREE::OperatorNode("*=", ASTREE::multi_assign);
+		if($1->getASTNodeType() == ASTREE::op) {
+			ASTREE::OperatorNode *leftOpNode = (ASTREE::OperatorNode *)$1;
+			if(leftOpNode->getOpType() == ASTREE::get_member) {			/* 对对象属性赋值 */
+				leftOpNode->setOpType(ASTREE::multi_assign_member);
+			} else if(leftOpNode->getOpType() == ASTREE::get_arr_var) {	/* 对数组元素赋值 */
+				leftOpNode->setOpType(ASTREE::multi_assign_arr);
+			}
+		}
+		multiAssignOpNode -> addChildNode($1);
+		$1 -> addPeerNode($3);
+		$$ = multiAssignOpNode;
+	}
+	| expression DIV_ASSIGN expression {
+		RootNode* divAssignOpNode = new ASTREE::OperatorNode("/=", ASTREE::div_assign);
+		if($1->getASTNodeType() == ASTREE::op) {
+			ASTREE::OperatorNode *leftOpNode = (ASTREE::OperatorNode *)$1;
+			if(leftOpNode->getOpType() == ASTREE::get_member) {			/* 对对象属性赋值 */
+				leftOpNode->setOpType(ASTREE::div_assign_member);
+			} else if(leftOpNode->getOpType() == ASTREE::get_arr_var) {	/* 对数组元素赋值 */
+				leftOpNode->setOpType(ASTREE::div_assign_arr);
+			}
+		}
+		divAssignOpNode -> addChildNode($1);
+		$1 -> addPeerNode($3);
+		$$ = divAssignOpNode;
 	}
 	| error ')' {yyerrok;}
 	;
