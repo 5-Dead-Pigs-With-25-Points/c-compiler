@@ -405,17 +405,17 @@ SMB::SymbolTable* IM::InterMediate::generateReturn(ASTREE::StatementNode* node, 
   quads.push_back(*temp);
 }
 
-SMB::Symbol *IM::InterMediate::generateOperator(ASTREE::OperatorNode *node, SMB::SymbolTable *symbol_table)
+SMB::Symbol *IM::InterMediate::generateOperator(ASTREE::OperatorNode *node, SMB::SymbolTable *symbol_table)  //运算符结点
 {
-    std::cout << "op begin, type: " << node->getOpType() << "\n";
+    std::cout << "op begin, type: " << node->getOpType() << "\n";   //对照符号表看输出
     Quaternion *temp;
     ASTREE::RootNode *arg1_node, *arg2_node;
-    switch (node->getOpType()) {
-    case ASTREE::assign: {
-        std::cout<<"assign\n";
+    switch (node->getOpType()) {                  //判断运算符类型
+    case ASTREE::assign: {                        //赋值操作
+        std::cout<<"assign\n";                    
         SMB::Symbol *result;
         IM::OperatorCode op;
-        if (node->getChildNode()->getASTNodeType() == ASTREE::op 
+        if (node->getChildNode()->getASTNodeType() == ASTREE::op            //若子节点为运算符且子节点为取值？指针？
         && ((ASTREE::OperatorNode *)node->getChildNode())->getOpType() == ASTREE::get_value)
         {
             op = IM::ASSIGN_POINTER;
@@ -430,7 +430,7 @@ SMB::Symbol *IM::InterMediate::generateOperator(ASTREE::OperatorNode *node, SMB:
                           << "node_type:"<<node->getChildNode()->getASTNodeType()
                           << node->getChildNode()->getContent() << " is not a variable. What are u doing?" << std::endl;
                 exit(1);
-            } else if (node->getChildNode()->getASTNodeType() == ASTREE::def_var) {
+            } else if (node->getChildNode()->getASTNodeType() == ASTREE::def_var) {   //定义新变量
                 if(symbol_table->addSymbol(node->getChildNode()) == 0){
                     std::cout << "\033[31mError: \033[0m"
                     << "value " << node->getChildNode()->getContent() << " is redeclaration" << std::endl;
@@ -440,8 +440,8 @@ SMB::Symbol *IM::InterMediate::generateOperator(ASTREE::OperatorNode *node, SMB:
             result = symbol_table->findSymbol(node->getChildNode()->getContent());
         }
 
-        ASTREE::RootNode *arg1_node = node->getChildNode()->getPeerNode();
-        std::cout<<"t = "<<arg1_node->getASTNodeType()<<std::endl;
+        ASTREE::RootNode *arg1_node = node->getChildNode()->getPeerNode();  //找到孩子结点的兄弟结点
+        std::cout<<"t = "<<arg1_node->getASTNodeType()<<std::endl;          //
         if (arg1_node->getASTNodeType() == ASTREE::call_var) {
             SMB::Symbol *arg1 = symbol_table->findSymbol(arg1_node->getContent());
             std::cout<<"getTypeName: "<<arg1->getName()<<std::endl;
@@ -454,7 +454,7 @@ SMB::Symbol *IM::InterMediate::generateOperator(ASTREE::OperatorNode *node, SMB:
             //               << "Type error!" << std::endl;
             //     exit(1);
             // }
-            typeCheck(op, result, arg1);
+            typeCheck(op, result, arg1);  //类型检查
             temp = new Quaternion(op, arg1, result);
         }
         else if (arg1_node->getASTNodeType() == ASTREE::op) {
@@ -472,7 +472,7 @@ SMB::Symbol *IM::InterMediate::generateOperator(ASTREE::OperatorNode *node, SMB:
             }
             temp = new Quaternion(op, arg1, result);
         }
-        else if (arg1_node->getASTNodeType() == ASTREE::call_func) {
+        else if (arg1_node->getASTNodeType() == ASTREE::call_func) {  //调用函数
             generate(arg1_node, symbol_table);
             SMB::Symbol *arg1 = tempVars.back();
             typeCheck(op, result, arg1);
@@ -487,7 +487,7 @@ SMB::Symbol *IM::InterMediate::generateOperator(ASTREE::OperatorNode *node, SMB:
         return result;
         break;
     }
-    case ASTREE::assign_arr: {
+    case ASTREE::assign_arr: {   //声明数组
         SMB::Symbol *result;
         if (node->getChildNode()->getASTNodeType() != ASTREE::op) {
             std::cout << "\033[31mError: \033[0m"
@@ -506,15 +506,15 @@ SMB::Symbol *IM::InterMediate::generateOperator(ASTREE::OperatorNode *node, SMB:
             //     exit(1);
             // }
         }
-        else if (arg1_node->getASTNodeType() == ASTREE::op) {
+        else if (arg1_node->getASTNodeType() == ASTREE::op) {     //操作数
             SMB::Symbol *arg1 = generateOperator((ASTREE::OperatorNode *)arg1_node, symbol_table);
             temp = new Quaternion(IM::ASSIGN_ARRAY, arg1, arg2, result);
         }
-        else if (arg1_node->getASTNodeType() == ASTREE::literal) {
+        else if (arg1_node->getASTNodeType() == ASTREE::literal) {   //字面值
             int arg1 = std::stoi(arg1_node->getContent());
             temp = new Quaternion(IM::ASSIGN_ARRAY, arg1, arg2, result);
         }
-        else if (arg1_node->getASTNodeType() == ASTREE::call_func) {
+        else if (arg1_node->getASTNodeType() == ASTREE::call_func) {   //调用函数
             generate(arg1_node, symbol_table);
             SMB::Symbol *arg1 = tempVars.back();
             temp = new Quaternion(IM::ASSIGN_ARRAY, arg1, arg2, result);
@@ -529,7 +529,7 @@ SMB::Symbol *IM::InterMediate::generateOperator(ASTREE::OperatorNode *node, SMB:
         return result;
         break;
     }
-    case ASTREE::assign_member: {
+    case ASTREE::assign_member: {                                       //为成员赋值
         std::cout<<"assign_member\n";
         SMB::Symbol *result;
         if (node->getChildNode()->getASTNodeType() != ASTREE::op) {
@@ -563,7 +563,7 @@ SMB::Symbol *IM::InterMediate::generateOperator(ASTREE::OperatorNode *node, SMB:
 
         break;
     }
-    case ASTREE::relop: {
+    case ASTREE::relop: {      //操作符
         Quaternion *temp_true, *temp_false;
         arg1_node = node->getChildNode();
         arg2_node = arg1_node->getPeerNode();

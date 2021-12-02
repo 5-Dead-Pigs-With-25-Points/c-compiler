@@ -6,7 +6,7 @@
 
 namespace IM {
 
-enum OperatorCode {
+enum OperatorCode {  //四元组操作符
     JUMP,
     JUMP_SMALL,
     JUMP_EQ_SMALL,
@@ -79,9 +79,9 @@ class Quaternion {
 private:
     OperatorCode op;
     // 0: arg1, 1: arg2, 2: result
-    Arg args[3];
+    Arg args[3];        //args三个分别表示不同含义
     int flag;
-    inline std::string __op_str__() { return operator_string[op]; }
+    inline std::string __op_str__() { return operator_string[op]; }    //第op个操作符
 
 public:
     inline Quaternion(OperatorCode op, int result) {
