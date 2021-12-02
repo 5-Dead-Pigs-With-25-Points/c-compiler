@@ -3,6 +3,7 @@
 #include <string.h>
 #include <fstream>
 #include "./grammar/Nodes.h"  
+#include "./grammar/InterMediate/InterMediate.h"
 
 using namespace std;
 
@@ -632,6 +633,12 @@ int main(int argc, char* argv[]){
 	if(root) root -> printTree();
 	SMB::SymbolTable* root_symbol_table = new SMB::SymbolTable(NULL, false);
 	SMB::tree(root_symbol_table, root, 0);
+
+	// 打印中间代码
+	IM::InterMediate *im = new IM::InterMediate(root, struct_table);
+    im->generate(root, im->getTable());
+    im->print();
+	
 	if(root) delete root;
 	return 0;
 }
