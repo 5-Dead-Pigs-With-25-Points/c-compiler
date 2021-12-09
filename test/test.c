@@ -6,7 +6,9 @@ int main(){
 	int a, b=2, c=3;
 	a = 1;
 	int f[10];
-	
+	if (a > 1) {
+		a = 3;
+	}
 	while(a < 4)
 	{
 	    a = a + 1;

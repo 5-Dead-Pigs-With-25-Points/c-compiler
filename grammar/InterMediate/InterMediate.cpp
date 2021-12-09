@@ -272,52 +272,6 @@ void IM::InterMediate::generate(ASTREE::RootNode* node, SMB::SymbolTable* symbol
     break;
   }
   case ASTREE::loop: {  // 循环
-    // ASTREE::LoopNode* loop = (ASTREE::LoopNode*)node;
-    // if (loop->getLoopType() == ASTREE::for_loop) {
-    //   SMB::SymbolTable* child_table = symbol_table->createChildTable(false);
-    //   child_table->setTableName("for");
-    //   generate(((ASTREE::LoopNode*)node)->getDeclareNode(), child_table);
-    //   int start = quads.size();
-    //   generate(((ASTREE::LoopNode*)node)->getCondNode(), child_table);  // 这里面会压栈trueList falseList
-    //   std::list<int> Judge_true = trueList.top();
-    //   std::list<int> Judge_false = falseList.top();
-    //   trueList.pop();
-    //   falseList.pop();  // for循环condition部分的条件转移
-    //   backPatch(&Judge_true, Judge_true.back() + 2);
-    //   while (p != NULL)  // for的{}内部分
-    //   {
-    //     generate(p, child_table);
-    //     p = p->getPeerNode();
-    //   }
-    //   generate(((ASTREE::LoopNode*)node)->getActionNode(), child_table);  // for(;;)第三部分
-
-    //   Quaternion* temp = new Quaternion(IM::JUMP, start);  // 回到循环最初
-    //   this->quads.push_back(*temp);
-    //   int end = quads.size();
-    //   backPatch(&Judge_false, end);  // 回填，跳出for循环的后一条指令序号
-    // }
-    // else if (loop->getLoopType() == ASTREE::while_loop)
-    // {
-    //   int start = quads.size();
-    //   generate(((ASTREE::LoopNode*)node)->getCondNode(), symbol_table);
-    //   std::list<int> Judge_true = trueList.top();
-    //   std::list<int> Judge_false = falseList.top();
-    //   trueList.pop();
-    //   falseList.pop();
-    //   backPatch(&Judge_true, Judge_true.back() + 2);
-    //   while (p != NULL) {
-    //     SMB::SymbolTable* child_table = symbol_table->createChildTable(false);
-    //     child_table->setTableName("while");
-    //     generate(p, child_table);
-    //     p = p->getPeerNode();
-    //   }
-
-    //   Quaternion* temp = new Quaternion(IM::JUMP, start);
-    //   this->quads.push_back(*temp);
-    //   int end = quads.size();
-    //   backPatch(&Judge_false, end);
-    // }
-    // break;
     ASTREE::LoopNode* loop = (ASTREE::LoopNode*)node;
     if (loop->getLoopType() == ASTREE::for_loop) {
       SMB::SymbolTable* child_table = symbol_table->createChildTable(false);
