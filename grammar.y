@@ -259,16 +259,19 @@ parameter_declaration: declaration_specifier ID {
 
 /* expression 表达式 */
 expression: expression '=' expression{									/* 赋值运算 */
-		RootNode* assignOpNode = new ASTREE::OperatorNode("=", ASTREE::assign);
+		ASTREE::OperatorNode* assignOpNode = new ASTREE::OperatorNode("=", ASTREE::assign);
 		if($1->getASTNodeType() == ASTREE::op) {
 			ASTREE::OperatorNode *leftOpNode = (ASTREE::OperatorNode *)$1;
+			std::cout<<"I am in!\n";
 			if(leftOpNode->getOpType() == ASTREE::get_member) {			/* 对对象属性赋值 */
-				leftOpNode->setOpType(ASTREE::assign_member);
+				assignOpNode->setOpType(ASTREE::assign_member);
+				std::cout<<leftOpNode->getOpType()<<std::endl;
 			} else if(leftOpNode->getOpType() == ASTREE::get_arr_var) {	/* 对数组元素赋值 */
-				leftOpNode->setOpType(ASTREE::assign_arr);
+				assignOpNode->setOpType(ASTREE::assign_arr);
 			}
 		}
 		assignOpNode -> addChildNode($1);
+		// std::cout<<"child type: "<< assignOpNode -> getChildNode() -> getOpType()<<std::endl;
 		$1 -> addPeerNode($3);
 		$$ = assignOpNode;
 	}
@@ -646,7 +649,7 @@ int main(int argc, char* argv[]){
     // if (flag_print_asm) {
     std::cout << asmgenerator->getAsmCode();
     // }
-
+	
 	if(root) delete root;
 	return 0;
 }

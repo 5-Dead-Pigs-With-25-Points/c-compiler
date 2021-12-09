@@ -13,7 +13,7 @@ IM::InterMediate::InterMediate(ASTREE::RootNode* root_node, SMB::StructTable* st
   this->buildInFunctionRegister();
 }
 
-// build-in function: print_int
+// build-in function: print_int, scanf_int
 void IM::InterMediate::buildInFunctionRegister()
 {
   ASTREE::DefineVarNode* tmp_arg;
@@ -24,6 +24,11 @@ void IM::InterMediate::buildInFunctionRegister()
   tmp_arg->setAllSymbolType("int");
   tmp_func = new ASTREE::DefineFunctionNode("print_int", tmp_arg);
   tmp_func->setReturnSymbolType("void");
+  func_symbol = new SMB::FuncSymbol(tmp_func);
+  this->rootSymbolTable->addFuncSymbol(func_symbol);
+
+  tmp_func = new ASTREE::DefineFunctionNode("scanf_int");
+  tmp_func->setReturnSymbolType("int");
   func_symbol = new SMB::FuncSymbol(tmp_func);
   this->rootSymbolTable->addFuncSymbol(func_symbol);
 }
@@ -434,6 +439,7 @@ void IM::InterMediate::generateReturn(ASTREE::StatementNode* node, SMB::SymbolTa
 SMB::Symbol *IM::InterMediate::generateOperator(ASTREE::OperatorNode *node, SMB::SymbolTable *symbol_table)  //运算符结点
 {
     std::cout << "op begin, type: " << node->getOpType() << "\n";   //对照符号表看输出
+    node->printInfo(1);
     Quaternion *temp;
     ASTREE::RootNode *arg1_node, *arg2_node;
     switch (node->getOpType()) {                  //判断运算符类型
