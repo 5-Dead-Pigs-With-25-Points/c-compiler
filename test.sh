@@ -3,5 +3,5 @@
 make clean
 make run
 make
+make build
 
-./parser ./test/test.c
