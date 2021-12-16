@@ -1,4 +1,8 @@
 PROGRAM = parser
+PROGRAM1 = ./parser
+BUILDFOLDER = build/
+BUILDIO = build/io
+NASM = nasm
 
 DEPS = $(shell find ./ -name "*.h")
 SRC = $(shell find ./ -name "*.cpp")
@@ -21,4 +25,18 @@ run: ./lexical.l ./grammar.y
 	$(CXX) -c $< -o $@ -std=$(CXXVER) -g
 
 clean:
-	rm -rf $(OBJS) $(PROGRAM) *.tab.cpp *.flex.cpp *.tab.h
+	rm -rf $(OBJS) $(PROGRAM) $(BUILDFOLDER) *.tab.cpp *.flex.cpp *.tab.h ./test/*.asm
+
+build:
+	$(PROGRAM1) ./test/test.c
+	mkdir $(BUILDFOLDER)
+	mkdir $(BUILDIO)
+	$(NASM) -f elf -d ELF_TYPE grammar/InterMediate/asm_io.asm -o grammar/InterMediate/asm_io.o
+	cp $(PROGRAM) $(BUILDFOLDER)
+	cp grammar/InterMediate/asm_io.o $(BUILDIO)
+	cp grammar/InterMediate/asm_io.inc $(BUILDIO)
+	cp -r test/ $(BUILDFOLDER)
+	cp example/Makefile $(BUILDFOLDER)
+	# $(PROGRAM1) ./test.c
+	# $(NASM) -f elf test.asm -o test.o
+	# $(CXX) -o test test.o grammar/InterMediate/asm_io.o -m32
