@@ -13,12 +13,16 @@ IM::InterMediate::InterMediate(ASTREE::RootNode* root_node, SMB::StructTable* st
   this->buildInFunctionRegister();
 }
 
-// build-in function: print_int, scanf_int
+// build-in function: print_int, read_int
 void IM::InterMediate::buildInFunctionRegister()
 {
   ASTREE::DefineVarNode* tmp_arg;
   ASTREE::DefineFunctionNode* tmp_func;
   SMB::FuncSymbol* func_symbol;
+
+  ASTREE::DefineVarNode* tmp_arg1;
+  ASTREE::DefineFunctionNode* tmp_func1;
+  SMB::FuncSymbol* func_symbol1;
 
   tmp_arg = new ASTREE::DefineVarNode("i");
   tmp_arg->setAllSymbolType("int");
@@ -27,10 +31,12 @@ void IM::InterMediate::buildInFunctionRegister()
   func_symbol = new SMB::FuncSymbol(tmp_func);
   this->rootSymbolTable->addFuncSymbol(func_symbol);
 
-  tmp_func = new ASTREE::DefineFunctionNode("scanf_int");
-  tmp_func->setReturnSymbolType("int");
-  func_symbol = new SMB::FuncSymbol(tmp_func);
-  this->rootSymbolTable->addFuncSymbol(func_symbol);
+  tmp_arg1 = new ASTREE::DefineVarNode("i");
+  tmp_arg1->setAllSymbolType("int");
+  tmp_func1 = new ASTREE::DefineFunctionNode("read_int", tmp_arg1);
+  tmp_func1->setReturnSymbolType("int");
+  func_symbol1 = new SMB::FuncSymbol(tmp_func1);
+  this->rootSymbolTable->addFuncSymbol(func_symbol1);
 }
 
 /*
@@ -878,7 +884,9 @@ SMB::Symbol *IM::InterMediate::generateOperator(ASTREE::OperatorNode *node, SMB:
             if (arg2_node->getASTNodeType() == ASTREE::call_var) {
                 // TODO: struct table
                 std::string type_name = ((SMB::StructDefSymbol *)arg1)->getTypeName();
-                // std::cout<<"struct_list:"<<this->rootSymbolTable->getStructTable()<<std::endl;
+                std::cout<<"struct_list:"<<this->rootSymbolTable->getStructTable()<<std::endl;
+                std::cout<<"type_name:"<<type_name<<std::endl;
+                std::cout<<"arg2-content:"<<arg2_node->getContent()<<std::endl;
                 int offset = this->rootSymbolTable->getStructTable()->findStruct(type_name)->getMemberOffset(arg2_node->getContent());
                 SMB::Symbol *arg2 = new SMB::Symbol(std::to_string(offset), SMB::literal);
                 childValue.push(arg2);

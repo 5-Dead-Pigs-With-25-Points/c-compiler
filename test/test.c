@@ -1,17 +1,20 @@
-void test_func(int a, int b){
-	a=3;
-	b=4;
-}
+// void test_func(int a, int b){
+// 	a=3;
+// 	b=4;
+// }
 struct wyc {
 	int a;
-	int b;
+	//int b;
 };
 int main(){
 	int a, b=2, c=3;
-	a = 1;
 	struct wyc w1;
 	w1.a = 1;
-	w1.b = 2;
+	read_int(a);
+	print_int(a);
+	/*w1.b = 2;
+	a = 1;
+	
 	w1.a = 3;
 	int f[10];
 	f[1] = 1;
@@ -23,7 +26,7 @@ int main(){
 	    a = a + 1;
 	    int h = 8;
 	}
-	a = scanf_int();
+	
 	for (int r=1;;){
 		for(int i =0;i<5;)
 		{
@@ -39,6 +42,7 @@ int main(){
 	    int a = 0;
 	}
 	test_func(b,c);
-	print_int(1);
+	a = scanf_int();
+	print_int(1);*/
 	return 0;
 }

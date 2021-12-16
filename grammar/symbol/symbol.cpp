@@ -73,6 +73,7 @@ SMB::StructSymbol::StructSymbol(std::string name, ASTREE::RootNode* node){
     // std::cout << "struct_name: " << name << std::endl;
     ASTREE::RootNode *curr_node = node;
     while(curr_node){
+        std::cout << '---' << std::endl;
         ASTREE::DefineVarNode *var = (ASTREE::DefineVarNode*)curr_node;
         offset_table[var->getContent()] = offset;
         offset+=4;
@@ -100,7 +101,9 @@ SMB::StructSymbol *SMB::StructTable::findStruct(std::string id_name){
     std::unordered_map<std::string, SMB::StructSymbol*>::iterator iter;
     iter = this->struct_hash_table.find(id_name);
     if(iter != this->struct_hash_table.end())
+    {
         return iter->second;
+    }
     else
         return NULL;
 }
