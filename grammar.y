@@ -624,6 +624,22 @@ void yyerror(const char* s){
 	fprintf(stderr, "Parse error: At line %d. %s\n", yylineno, s);
 }
 
+std::string replaceExtName(char* filename) {
+    int dotIndex = 0;
+    int nameLength = strlen(filename);
+    for (int i = nameLength - 1; i >= 0; i--) {
+        if (filename[i] == '.') {
+            dotIndex = i;
+            break;
+        }
+    }
+    char* buf = new char[dotIndex];
+    strncpy(buf, filename, dotIndex);
+    std::string rev(buf);
+    rev += ".asm";
+    return rev;
+}
+
 int main(int argc, char* argv[]){
 	char *filename = NULL;
 	filename = argv[1];
@@ -650,6 +666,11 @@ int main(int argc, char* argv[]){
     // if (flag_print_asm) {
     std::cout << asmgenerator->getAsmCode();
     // }
+
+	std::string outfilename = replaceExtName(filename);
+    std::ofstream outasm(outfilename);
+
+    outasm << asmgenerator->getAsmCode();
 	
 	if(root) delete root;
 	return 0;
