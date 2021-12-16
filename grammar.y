@@ -152,10 +152,10 @@ declaration_specifier: INT {
         $$ = strdup("void")
     }
     | INT '*' {
-        $$ = strdup("int poiter");
+        $$ = strdup("int ptr");
     }
     | VOID '*' {
-        $$ = strdup("void pointer");
+        $$ = strdup("void ptr");
     }
     ;
 */
@@ -196,21 +196,22 @@ struct_parameters: struct_parameter {
 // 结构体中的变量形式 int a; 
 // 好像没有定义到 int a, b, a[2]的情况 可以测试编译器的输出 
 // 如果有问题可以尝试用 declaration_specifier declarators_init ';' 来代替
-/* struct_parameter: declaration_specifier ID ';' {
+struct_parameter: declaration_specifier ID ';' {
 		ASTREE::DefineVarNode* var = new ASTREE::DefineVarNode($2);
 		var -> setAllSymbolType($1);
 		$$ = var;
     }
     ;
-*/
+
 // 可能会涉及到structTable 后续更改
-struct_parameter: declaration_specifier declarators_init ';' {
-	ASTREE::RootNode* statement = new ASTREE::StatementNode(ASTREE::definition);
-	ASTREE::DefineVarNode* variable = (ASTREE::DefineVarNode*)$2;
-	variable -> setAllSymbolType($1);
-	statement -> addChildNode(variable);
-	$$ = statement;
-}
+// 
+// struct_parameter: declaration_specifier declarators_init ';' {
+// 	ASTREE::RootNode* statement = new ASTREE::StatementNode(ASTREE::definition);
+// 	ASTREE::DefineVarNode* variable = (ASTREE::DefineVarNode*)$2;
+// 	variable -> setAllSymbolType($1);
+// 	statement -> addChildNode(variable);
+// 	$$ = statement;
+// }
 
 // 变量声明符 a a[5]
 variable_declarator: ID {
@@ -379,13 +380,13 @@ expression: expression '=' expression{									/* 赋值运算 */
 		RootNode* starNode = new ASTREE::OperatorNode("*", ASTREE::get_value);
 		ASTREE::CallVarNode* var = new ASTREE::CallVarNode($2);
 		starNode -> addChildNode(var);
-		$$ = var;
+		$$ = starNode;
 	}
 	| '&' ID {															/* 取地址 */
 		RootNode* getAddressNode = new ASTREE::OperatorNode("&", ASTREE::get_address);
 		RootNode* temp = new ASTREE::CallVarNode($2);
 		getAddressNode -> addChildNode(temp);
-		$$ = temp;
+		$$ = getAddressNode;
 	}
 	| ID DPLUS {
 		RootNode* dplusOpNode = new ASTREE::OperatorNode("++", ASTREE::after_dplus);

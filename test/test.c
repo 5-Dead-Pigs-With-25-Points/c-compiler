@@ -4,12 +4,13 @@
 // }
 struct wyc {
 	int a;
-	//int b;
+	int b;
 };
 int main(){
 	int a, b=2, c=3;
 	struct wyc w1;
 	w1.a = 1;
+	w1.b = 2;
 	read_int(a);
 	print_int(a);
 	/*w1.b = 2;
