@@ -1,11 +1,9 @@
 int do_it(int n) {
-    if (n == 1) {
-        return 0;
-    }
-    return do_it(n-1) + n;
+    return n % 2;
 }
 
 int main() {
-    printf("%d", do_it(5));  // should be 14
+    int tmp = do_it(5);
+    print_int(tmp);
     return 0;
 }

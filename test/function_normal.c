@@ -3,6 +3,7 @@ int do_it(int n) {
 }
 
 int main() {
-    printf("%d", do_it(5));  // should be 1
+    int tmp = do_it(5);
+    print_int(tmp);
     return 0;
 }

@@ -165,7 +165,7 @@ declaration_specifier: TYPE {
 		$$ = $1;
 	}
 	| TYPE '*' {
-		$$ = strcat($1, " pointer");
+		$$ = strcat($1, " ptr");
 	}
 
 // 结构体定义 struct a {}

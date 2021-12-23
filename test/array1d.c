@@ -7,7 +7,7 @@ int main() {
     }
     i = 0;
     for (i; i < 5; i=i+1) {
-        printf("%d", a[i]);
+        print_int(a[i]);
     }
     return 0;
 }

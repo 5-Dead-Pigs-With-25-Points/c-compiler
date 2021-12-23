@@ -28,7 +28,12 @@ clean:
 	rm -rf $(OBJS) $(PROGRAM) $(BUILDFOLDER) *.tab.cpp *.flex.cpp *.tab.h ./test/*.asm
 
 build:
-	$(PROGRAM1) ./test/test.c
+	$(PROGRAM1) ./test/array1d.c
+	$(PROGRAM1) ./test/base.c
+	$(PROGRAM1) ./test/function_normal.c
+	$(PROGRAM1) ./test/function_recursive.c
+	$(PROGRAM1) ./test/pointer1d.c
+	$(PROGRAM1) ./test/struct.c
 	mkdir $(BUILDFOLDER)
 	mkdir $(BUILDIO)
 	$(NASM) -f elf -d ELF_TYPE grammar/InterMediate/asm_io.asm -o grammar/InterMediate/asm_io.o
@@ -37,6 +42,3 @@ build:
 	cp grammar/InterMediate/asm_io.inc $(BUILDIO)
 	cp -r test/ $(BUILDFOLDER)
 	cp example/Makefile $(BUILDFOLDER)
-	# $(PROGRAM1) ./test.c
-	# $(NASM) -f elf test.asm -o test.o
-	# $(CXX) -o test test.o grammar/InterMediate/asm_io.o -m32
